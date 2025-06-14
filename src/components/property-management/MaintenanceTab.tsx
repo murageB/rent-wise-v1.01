@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Search, Wrench, AlertTriangle, Clock, CheckCircle, Calendar, User } from "lucide-react";
+import { Plus, Search, Wrench, AlertTriangle, Clock, CheckCircle, Calendar, User, Edit } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface MaintenanceRequest {
@@ -31,6 +30,10 @@ const MaintenanceTab = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterPriority, setFilterPriority] = useState<string>("all");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingRequest, setEditingRequest] = useState<MaintenanceRequest | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  
   const [maintenanceRequests, setMaintenanceRequests] = useState<MaintenanceRequest[]>([
     {
       id: "1",
@@ -113,10 +116,60 @@ const MaintenanceTab = () => {
 
     setMaintenanceRequests([request, ...maintenanceRequests]);
     setNewRequest({ title: "", description: "", tenant: "", property: "", unit: "", priority: "medium" });
+    setIsAddDialogOpen(false);
     
     toast({
       title: "Success",
       description: "Maintenance request added successfully",
+    });
+  };
+
+  const updateRequestStatus = (id: string, status: MaintenanceRequest['status']) => {
+    setMaintenanceRequests(maintenanceRequests.map(request => 
+      request.id === id 
+        ? { 
+            ...request, 
+            status,
+            dateCompleted: status === 'completed' ? new Date().toISOString().split('T')[0] : request.dateCompleted
+          }
+        : request
+    ));
+    
+    toast({
+      title: "Success",
+      description: `Request marked as ${status}`,
+    });
+  };
+
+  const assignRequest = (id: string, assignedTo: string) => {
+    setMaintenanceRequests(maintenanceRequests.map(request => 
+      request.id === id 
+        ? { 
+            ...request, 
+            assignedTo,
+            status: assignedTo ? 'in-progress' : 'pending'
+          }
+        : request
+    ));
+    
+    toast({
+      title: "Success",
+      description: "Request assigned successfully",
+    });
+  };
+
+  const handleEditRequest = () => {
+    if (!editingRequest) return;
+
+    setMaintenanceRequests(maintenanceRequests.map(request => 
+      request.id === editingRequest.id ? editingRequest : request
+    ));
+    setEditingRequest(null);
+    setIsEditDialogOpen(false);
+    
+    toast({
+      title: "Success",
+      description: "Request updated successfully",
     });
   };
 
@@ -162,7 +215,7 @@ const MaintenanceTab = () => {
           <h2 className="text-2xl font-bold">Maintenance Requests</h2>
           <p className="text-muted-foreground">Track and manage property maintenance</p>
         </div>
-        <Dialog>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
@@ -245,6 +298,7 @@ const MaintenanceTab = () => {
         </Dialog>
       </div>
 
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -291,6 +345,7 @@ const MaintenanceTab = () => {
         </Card>
       </div>
 
+      {/* Filters */}
       <div className="flex items-center space-x-4">
         <div className="flex items-center space-x-2">
           <Search className="h-4 w-4 text-muted-foreground" />
@@ -327,6 +382,7 @@ const MaintenanceTab = () => {
         </Select>
       </div>
 
+      {/* Requests Table */}
       <Card>
         <CardHeader>
           <CardTitle>Maintenance Requests</CardTitle>
@@ -397,12 +453,32 @@ const MaintenanceTab = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex space-x-1">
-                      <Button variant="outline" size="sm">
-                        Edit
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          setEditingRequest(request);
+                          setIsEditDialogOpen(true);
+                        }}
+                      >
+                        <Edit className="h-3 w-3" />
                       </Button>
                       {request.status === "pending" && (
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => assignRequest(request.id, "Technician")}
+                        >
                           Assign
+                        </Button>
+                      )}
+                      {request.status === "in-progress" && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => updateRequestStatus(request.id, "completed")}
+                        >
+                          Complete
                         </Button>
                       )}
                     </div>
@@ -413,6 +489,78 @@ const MaintenanceTab = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Edit Request Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Maintenance Request</DialogTitle>
+            <DialogDescription>
+              Update the request details.
+            </DialogDescription>
+          </DialogHeader>
+          {editingRequest && (
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="edit-title">Title</Label>
+                <Input
+                  id="edit-title"
+                  value={editingRequest.title}
+                  onChange={(e) => setEditingRequest({...editingRequest, title: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-description">Description</Label>
+                <Textarea
+                  id="edit-description"
+                  value={editingRequest.description}
+                  onChange={(e) => setEditingRequest({...editingRequest, description: e.target.value})}
+                  rows={3}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-assigned">Assigned To</Label>
+                <Input
+                  id="edit-assigned"
+                  value={editingRequest.assignedTo || ""}
+                  onChange={(e) => setEditingRequest({...editingRequest, assignedTo: e.target.value})}
+                  placeholder="Assign to technician"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-cost">Cost</Label>
+                <Input
+                  id="edit-cost"
+                  type="number"
+                  value={editingRequest.cost?.toString() || ""}
+                  onChange={(e) => setEditingRequest({...editingRequest, cost: parseFloat(e.target.value) || 0})}
+                  placeholder="Enter cost"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-status">Status</Label>
+                <Select 
+                  value={editingRequest.status} 
+                  onValueChange={(value) => setEditingRequest({...editingRequest, status: value as MaintenanceRequest['status']})}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="in-progress">In Progress</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <Button onClick={handleEditRequest} className="w-full">
+            Update Request
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

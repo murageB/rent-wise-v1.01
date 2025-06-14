@@ -26,6 +26,7 @@ interface RentPayment {
 const RentTab = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [rentPayments, setRentPayments] = useState<RentPayment[]>([
     {
       id: "1",
@@ -97,10 +98,29 @@ const RentTab = () => {
 
     setRentPayments([payment, ...rentPayments]);
     setNewPayment({ tenantName: "", property: "", unit: "", amount: "", paymentMethod: "" });
+    setIsAddDialogOpen(false);
     
     toast({
       title: "Success",
       description: "Payment recorded successfully",
+    });
+  };
+
+  const markAsPaid = (paymentId: string) => {
+    setRentPayments(rentPayments.map(payment => 
+      payment.id === paymentId 
+        ? { 
+            ...payment, 
+            status: "paid" as const, 
+            paidDate: new Date().toISOString().split('T')[0],
+            paymentMethod: payment.paymentMethod || "Cash"
+          }
+        : payment
+    ));
+    
+    toast({
+      title: "Success",
+      description: "Payment marked as paid",
     });
   };
 
@@ -133,7 +153,7 @@ const RentTab = () => {
           <h2 className="text-2xl font-bold">Rent Management</h2>
           <p className="text-muted-foreground">Track rent payments and collections</p>
         </div>
-        <Dialog>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
@@ -227,7 +247,7 @@ const RentTab = () => {
           <CardContent>
             <div className="text-2xl font-bold text-green-600">${paidRent.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
-              {Math.round((paidRent / totalRent) * 100)}% of total
+              {totalRent > 0 ? Math.round((paidRent / totalRent) * 100) : 0}% of total
             </p>
           </CardContent>
         </Card>
@@ -335,7 +355,11 @@ const RentTab = () => {
                   </TableCell>
                   <TableCell>
                     {payment.status !== "paid" && (
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => markAsPaid(payment.id)}
+                      >
                         Mark Paid
                       </Button>
                     )}

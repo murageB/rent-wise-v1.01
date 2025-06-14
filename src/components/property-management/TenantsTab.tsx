@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Phone, Mail, Calendar, Edit, DollarSign } from "lucide-react";
+import { Plus, Search, Phone, Mail, Calendar, Edit, DollarSign, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Tenant {
@@ -25,6 +25,10 @@ interface Tenant {
 
 const TenantsTab = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingTenant, setEditingTenant] = useState<Tenant | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  
   const [tenants, setTenants] = useState<Tenant[]>([
     {
       id: "1",
@@ -106,10 +110,34 @@ const TenantsTab = () => {
 
     setTenants([...tenants, tenant]);
     setNewTenant({ name: "", email: "", phone: "", property: "", unit: "", rentAmount: "", leaseStart: "", leaseEnd: "" });
+    setIsAddDialogOpen(false);
     
     toast({
       title: "Success",
       description: "Tenant added successfully",
+    });
+  };
+
+  const handleEditTenant = () => {
+    if (!editingTenant) return;
+
+    setTenants(tenants.map(t => 
+      t.id === editingTenant.id ? editingTenant : t
+    ));
+    setEditingTenant(null);
+    setIsEditDialogOpen(false);
+    
+    toast({
+      title: "Success",
+      description: "Tenant updated successfully",
+    });
+  };
+
+  const handleDeleteTenant = (id: string) => {
+    setTenants(tenants.filter(t => t.id !== id));
+    toast({
+      title: "Success",
+      description: "Tenant removed successfully",
     });
   };
 
@@ -130,7 +158,7 @@ const TenantsTab = () => {
           <h2 className="text-2xl font-bold">Tenants</h2>
           <p className="text-muted-foreground">Manage your tenant relationships</p>
         </div>
-        <Dialog>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
@@ -305,11 +333,29 @@ const TenantsTab = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex space-x-1">
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          setEditingTenant(tenant);
+                          setIsEditDialogOpen(true);
+                        }}
+                      >
                         <Edit className="h-3 w-3" />
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.open(`mailto:${tenant.email}`, '_blank')}
+                      >
                         <Mail className="h-3 w-3" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleDeleteTenant(tenant.id)}
+                      >
+                        <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
                   </TableCell>
@@ -319,6 +365,93 @@ const TenantsTab = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Edit Tenant Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Tenant</DialogTitle>
+            <DialogDescription>
+              Update the tenant details.
+            </DialogDescription>
+          </DialogHeader>
+          {editingTenant && (
+            <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
+              <div className="grid gap-2">
+                <Label htmlFor="edit-name">Full Name</Label>
+                <Input
+                  id="edit-name"
+                  value={editingTenant.name}
+                  onChange={(e) => setEditingTenant({...editingTenant, name: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-email">Email</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={editingTenant.email}
+                  onChange={(e) => setEditingTenant({...editingTenant, email: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-phone">Phone</Label>
+                <Input
+                  id="edit-phone"
+                  value={editingTenant.phone}
+                  onChange={(e) => setEditingTenant({...editingTenant, phone: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-property">Property</Label>
+                <Input
+                  id="edit-property"
+                  value={editingTenant.property}
+                  onChange={(e) => setEditingTenant({...editingTenant, property: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-unit">Unit</Label>
+                <Input
+                  id="edit-unit"
+                  value={editingTenant.unit}
+                  onChange={(e) => setEditingTenant({...editingTenant, unit: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-rent">Monthly Rent</Label>
+                <Input
+                  id="edit-rent"
+                  type="number"
+                  value={editingTenant.rentAmount.toString()}
+                  onChange={(e) => setEditingTenant({...editingTenant, rentAmount: parseFloat(e.target.value) || 0})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-lease-start">Lease Start Date</Label>
+                <Input
+                  id="edit-lease-start"
+                  type="date"
+                  value={editingTenant.leaseStart}
+                  onChange={(e) => setEditingTenant({...editingTenant, leaseStart: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-lease-end">Lease End Date</Label>
+                <Input
+                  id="edit-lease-end"
+                  type="date"
+                  value={editingTenant.leaseEnd}
+                  onChange={(e) => setEditingTenant({...editingTenant, leaseEnd: e.target.value})}
+                />
+              </div>
+            </div>
+          )}
+          <Button onClick={handleEditTenant} className="w-full">
+            Update Tenant
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

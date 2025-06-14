@@ -6,8 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, MapPin, DollarSign, Users, Edit } from "lucide-react";
+import { Plus, Search, MapPin, Edit, Users, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Property {
@@ -64,6 +63,10 @@ const PropertiesTab = () => {
     monthlyRent: ""
   });
 
+  const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
   const filteredProperties = properties.filter(property =>
     property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     property.address.toLowerCase().includes(searchTerm.toLowerCase())
@@ -92,10 +95,34 @@ const PropertiesTab = () => {
 
     setProperties([...properties, property]);
     setNewProperty({ name: "", address: "", type: "", units: "", monthlyRent: "" });
+    setIsAddDialogOpen(false);
     
     toast({
       title: "Success",
       description: "Property added successfully",
+    });
+  };
+
+  const handleEditProperty = () => {
+    if (!editingProperty) return;
+
+    setProperties(properties.map(p => 
+      p.id === editingProperty.id ? editingProperty : p
+    ));
+    setEditingProperty(null);
+    setIsEditDialogOpen(false);
+    
+    toast({
+      title: "Success",
+      description: "Property updated successfully",
+    });
+  };
+
+  const handleDeleteProperty = (id: string) => {
+    setProperties(properties.filter(p => p.id !== id));
+    toast({
+      title: "Success",
+      description: "Property deleted successfully",
     });
   };
 
@@ -115,7 +142,7 @@ const PropertiesTab = () => {
           <h2 className="text-2xl font-bold">Properties</h2>
           <p className="text-muted-foreground">Manage your property portfolio</p>
         </div>
-        <Dialog>
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
@@ -238,7 +265,15 @@ const PropertiesTab = () => {
               </div>
               
               <div className="flex space-x-2 pt-2">
-                <Button variant="outline" size="sm" className="flex-1">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => {
+                    setEditingProperty(property);
+                    setIsEditDialogOpen(true);
+                  }}
+                >
                   <Edit className="h-3 w-3 mr-1" />
                   Edit
                 </Button>
@@ -246,11 +281,79 @@ const PropertiesTab = () => {
                   <Users className="h-3 w-3 mr-1" />
                   Tenants
                 </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleDeleteProperty(property.id)}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Edit Property Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Property</DialogTitle>
+            <DialogDescription>
+              Update the property details.
+            </DialogDescription>
+          </DialogHeader>
+          {editingProperty && (
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="edit-name">Property Name</Label>
+                <Input
+                  id="edit-name"
+                  value={editingProperty.name}
+                  onChange={(e) => setEditingProperty({...editingProperty, name: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-address">Address</Label>
+                <Input
+                  id="edit-address"
+                  value={editingProperty.address}
+                  onChange={(e) => setEditingProperty({...editingProperty, address: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-type">Property Type</Label>
+                <Input
+                  id="edit-type"
+                  value={editingProperty.type}
+                  onChange={(e) => setEditingProperty({...editingProperty, type: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-units">Number of Units</Label>
+                <Input
+                  id="edit-units"
+                  type="number"
+                  value={editingProperty.units.toString()}
+                  onChange={(e) => setEditingProperty({...editingProperty, units: parseInt(e.target.value) || 0})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-rent">Total Monthly Rent</Label>
+                <Input
+                  id="edit-rent"
+                  type="number"
+                  value={editingProperty.monthlyRent.toString()}
+                  onChange={(e) => setEditingProperty({...editingProperty, monthlyRent: parseFloat(e.target.value) || 0})}
+                />
+              </div>
+            </div>
+          )}
+          <Button onClick={handleEditProperty} className="w-full">
+            Update Property
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
