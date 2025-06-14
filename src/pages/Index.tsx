@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,11 +12,11 @@ import ReportsTab from "@/components/property-management/ReportsTab";
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Mock data - in a real app, this would come from a database
+  // Mock data - updated to KES amounts
   const stats = {
     totalProperties: 12,
     totalTenants: 28,
-    monthlyRevenue: 15400,
+    monthlyRevenue: 1540000,
     pendingMaintenance: 5,
     occupancyRate: 92
   };
@@ -70,7 +69,7 @@ const Index = () => {
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">${stats.monthlyRevenue.toLocaleString()}</div>
+                  <div className="text-2xl font-bold">KES {stats.monthlyRevenue.toLocaleString()}</div>
                   <p className="text-xs text-muted-foreground">+12% from last month</p>
                 </CardContent>
               </Card>
@@ -98,7 +97,7 @@ const Index = () => {
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     <div className="flex-1">
                       <p className="text-sm font-medium">Rent payment received</p>
-                      <p className="text-xs text-muted-foreground">Unit 2A - $1,200</p>
+                      <p className="text-xs text-muted-foreground">Unit 2A - KES 120,000</p>
                     </div>
                     <span className="text-xs text-muted-foreground">2h ago</span>
                   </div>

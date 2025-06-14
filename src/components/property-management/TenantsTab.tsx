@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,7 +36,7 @@ const TenantsTab = () => {
       phone: "(555) 123-4567",
       property: "Sunset Apartments",
       unit: "2A",
-      rentAmount: 1200,
+      rentAmount: 120000,
       leaseStart: "2024-01-01",
       leaseEnd: "2024-12-31",
       status: "active"
@@ -49,7 +48,7 @@ const TenantsTab = () => {
       phone: "(555) 987-6543",
       property: "Downtown Loft",
       unit: "1",
-      rentAmount: 1800,
+      rentAmount: 180000,
       leaseStart: "2024-03-01",
       leaseEnd: "2025-02-28",
       status: "active"
@@ -61,7 +60,7 @@ const TenantsTab = () => {
       phone: "(555) 456-7890",
       property: "Garden View Condos",
       unit: "3B",
-      rentAmount: 1300,
+      rentAmount: 130000,
       leaseStart: "2023-12-01",
       leaseEnd: "2024-11-30",
       status: "late"
@@ -220,13 +219,13 @@ const TenantsTab = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="tenant-rent">Monthly Rent</Label>
+                <Label htmlFor="tenant-rent">Monthly Rent (KES)</Label>
                 <Input
                   id="tenant-rent"
                   type="number"
                   value={newTenant.rentAmount}
                   onChange={(e) => setNewTenant({...newTenant, rentAmount: e.target.value})}
-                  placeholder="Enter monthly rent amount"
+                  placeholder="Enter monthly rent amount in KES"
                 />
               </div>
               <div className="grid gap-2">
@@ -314,7 +313,7 @@ const TenantsTab = () => {
                   <TableCell>
                     <div className="flex items-center">
                       <DollarSign className="h-3 w-3 mr-1" />
-                      ${tenant.rentAmount.toLocaleString()}
+                      KES {tenant.rentAmount.toLocaleString()}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -419,7 +418,7 @@ const TenantsTab = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-rent">Monthly Rent</Label>
+                <Label htmlFor="edit-rent">Monthly Rent (KES)</Label>
                 <Input
                   id="edit-rent"
                   type="number"

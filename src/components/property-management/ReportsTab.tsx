@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,34 +8,35 @@ import { useState } from "react";
 const ReportsTab = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("month");
 
-  // Mock data for charts
+  // Mock data for charts - updated to KES amounts
   const monthlyRevenue = [
-    { month: "Jan", revenue: 12400, expenses: 3200 },
-    { month: "Feb", revenue: 13200, expenses: 2800 },
-    { month: "Mar", revenue: 14100, expenses: 3500 },
-    { month: "Apr", revenue: 13800, expenses: 2900 },
-    { month: "May", revenue: 15200, expenses: 3100 },
-    { month: "Jun", revenue: 15400, expenses: 3400 }
+    { month: "Jan", revenue: 1240000, expenses: 320000 },
+    { month: "Feb", revenue: 1320000, expenses: 280000 },
+    { month: "Mar", revenue: 1410000, expenses: 350000 },
+    { month: "Apr", revenue: 1380000, expenses: 290000 },
+    { month: "May", revenue: 1520000, expenses: 310000 },
+    { month: "Jun", revenue: 1540000, expenses: 340000 }
   ];
 
+  // Mock data for charts
   const occupancyData = [
     { name: "Occupied", value: 28, color: "#22c55e" },
     { name: "Vacant", value: 4, color: "#ef4444" }
   ];
 
   const maintenanceCosts = [
-    { category: "Plumbing", amount: 1200 },
-    { category: "Electrical", amount: 800 },
-    { category: "HVAC", amount: 1500 },
-    { category: "General", amount: 600 },
-    { category: "Appliances", amount: 900 }
+    { category: "Plumbing", amount: 120000 },
+    { category: "Electrical", amount: 80000 },
+    { category: "HVAC", amount: 150000 },
+    { category: "General", amount: 60000 },
+    { category: "Appliances", amount: 90000 }
   ];
 
   const propertyPerformance = [
-    { property: "Sunset Apartments", revenue: 28800, occupancy: 92 },
-    { property: "Downtown Loft", revenue: 1800, occupancy: 100 },
-    { property: "Garden View Condos", revenue: 15600, occupancy: 83 },
-    { property: "Riverside Complex", revenue: 22400, occupancy: 95 }
+    { property: "Sunset Apartments", revenue: 2880000, occupancy: 92 },
+    { property: "Downtown Loft", revenue: 180000, occupancy: 100 },
+    { property: "Garden View Condos", revenue: 1560000, occupancy: 83 },
+    { property: "Riverside Complex", revenue: 2240000, occupancy: 95 }
   ];
 
   const totalRevenue = monthlyRevenue.reduce((sum, month) => sum + month.revenue, 0);
@@ -77,7 +77,7 @@ const ReportsTab = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">${totalRevenue.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-green-600">KES {totalRevenue.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">+12% from last period</p>
           </CardContent>
         </Card>
@@ -88,7 +88,7 @@ const ReportsTab = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${netIncome.toLocaleString()}</div>
+            <div className="text-2xl font-bold">KES {netIncome.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               {Math.round((netIncome / totalRevenue) * 100)}% profit margin
             </p>
@@ -112,7 +112,7 @@ const ReportsTab = () => {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">${totalExpenses.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-red-600">KES {totalExpenses.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               {Math.round((totalExpenses / totalRevenue) * 100)}% of revenue
             </p>
@@ -205,7 +205,7 @@ const ReportsTab = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-medium">${property.revenue.toLocaleString()}</div>
+                    <div className="font-medium">KES {property.revenue.toLocaleString()}</div>
                     <div className="text-sm text-muted-foreground">monthly</div>
                   </div>
                 </div>

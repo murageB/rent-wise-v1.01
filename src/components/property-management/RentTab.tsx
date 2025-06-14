@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,7 +32,7 @@ const RentTab = () => {
       tenantName: "John Smith",
       property: "Sunset Apartments",
       unit: "2A",
-      amount: 1200,
+      amount: 120000,
       dueDate: "2024-01-01",
       paidDate: "2024-01-01",
       status: "paid",
@@ -44,7 +43,7 @@ const RentTab = () => {
       tenantName: "Sarah Johnson",
       property: "Downtown Loft",
       unit: "1",
-      amount: 1800,
+      amount: 180000,
       dueDate: "2024-01-01",
       status: "pending"
     },
@@ -53,7 +52,7 @@ const RentTab = () => {
       tenantName: "Mike Davis",
       property: "Garden View Condos",
       unit: "3B",
-      amount: 1300,
+      amount: 130000,
       dueDate: "2023-12-01",
       status: "overdue"
     }
@@ -196,13 +195,13 @@ const RentTab = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="payment-amount">Amount</Label>
+                <Label htmlFor="payment-amount">Amount (KES)</Label>
                 <Input
                   id="payment-amount"
                   type="number"
                   value={newPayment.amount}
                   onChange={(e) => setNewPayment({...newPayment, amount: e.target.value})}
-                  placeholder="Enter payment amount"
+                  placeholder="Enter payment amount in KES"
                 />
               </div>
               <div className="grid gap-2">
@@ -234,7 +233,7 @@ const RentTab = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${totalRent.toLocaleString()}</div>
+            <div className="text-2xl font-bold">KES {totalRent.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">This month</p>
           </CardContent>
         </Card>
@@ -245,7 +244,7 @@ const RentTab = () => {
             <CheckCircle className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">${paidRent.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-green-600">KES {paidRent.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               {totalRent > 0 ? Math.round((paidRent / totalRent) * 100) : 0}% of total
             </p>
@@ -258,7 +257,7 @@ const RentTab = () => {
             <AlertCircle className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">${overdueRent.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-red-600">KES {overdueRent.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">Needs attention</p>
           </CardContent>
         </Card>
@@ -331,7 +330,7 @@ const RentTab = () => {
                   <TableCell>
                     <div className="flex items-center">
                       <DollarSign className="h-3 w-3 mr-1" />
-                      {payment.amount.toLocaleString()}
+                      KES {payment.amount.toLocaleString()}
                     </div>
                   </TableCell>
                   <TableCell>
