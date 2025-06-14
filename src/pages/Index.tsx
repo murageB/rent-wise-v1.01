@@ -8,10 +8,12 @@ import TenantsTab from "@/components/property-management/TenantsTab";
 import RentTab from "@/components/property-management/RentTab";
 import MaintenanceTab from "@/components/property-management/MaintenanceTab";
 import ReportsTab from "@/components/property-management/ReportsTab";
+import PropertyForm from "@/components/property-management/PropertyForm";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedPropertyFilter, setSelectedPropertyFilter] = useState<string | undefined>();
+  const [isAddPropertyDialogOpen, setIsAddPropertyDialogOpen] = useState(false);
 
   // Mock data - updated to KES amounts
   const stats = {
@@ -25,6 +27,28 @@ const Index = () => {
   const handleNavigateToTenants = (propertyId?: string) => {
     setSelectedPropertyFilter(propertyId);
     setActiveTab("tenants");
+  };
+
+  const handleAddProperty = (propertyData: any) => {
+    // This would typically be handled by a global state or passed down
+    console.log("Adding property:", propertyData);
+    setIsAddPropertyDialogOpen(false);
+  };
+
+  const handleQuickActionAddProperty = () => {
+    setIsAddPropertyDialogOpen(true);
+  };
+
+  const handleQuickActionAddTenant = () => {
+    setActiveTab("tenants");
+  };
+
+  const handleQuickActionGenerateReport = () => {
+    setActiveTab("reports");
+  };
+
+  const handleQuickActionRecordPayment = () => {
+    setActiveTab("rent");
   };
 
   return (
@@ -132,19 +156,35 @@ const Index = () => {
                   <CardDescription>Common tasks and shortcuts</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button 
+                    className="w-full justify-start" 
+                    variant="outline"
+                    onClick={handleQuickActionAddProperty}
+                  >
                     <Plus className="mr-2 h-4 w-4" />
                     Add New Property
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button 
+                    className="w-full justify-start" 
+                    variant="outline"
+                    onClick={handleQuickActionAddTenant}
+                  >
                     <Users className="mr-2 h-4 w-4" />
                     Add New Tenant
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button 
+                    className="w-full justify-start" 
+                    variant="outline"
+                    onClick={handleQuickActionGenerateReport}
+                  >
                     <FileText className="mr-2 h-4 w-4" />
                     Generate Report
                   </Button>
-                  <Button className="w-full justify-start" variant="outline">
+                  <Button 
+                    className="w-full justify-start" 
+                    variant="outline"
+                    onClick={handleQuickActionRecordPayment}
+                  >
                     <DollarSign className="mr-2 h-4 w-4" />
                     Record Payment
                   </Button>
@@ -173,6 +213,13 @@ const Index = () => {
             <ReportsTab />
           </TabsContent>
         </Tabs>
+
+        <PropertyForm
+          isOpen={isAddPropertyDialogOpen}
+          onOpenChange={setIsAddPropertyDialogOpen}
+          onSubmit={handleAddProperty}
+          mode="add"
+        />
       </div>
     </div>
   );
