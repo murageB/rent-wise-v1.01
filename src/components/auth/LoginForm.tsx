@@ -23,10 +23,15 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
     
     try {
       await onLogin(email, password);
-    } catch (error: any) {
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid email or password",
+        title: "Success",
+        description: "You have been signed in successfully.",
+      });
+    } catch (error: any) {
+      console.error('Login form error:', error);
+      toast({
+        title: "Sign In Failed",
+        description: error.message || "Unable to sign in. Please check your credentials and try again.",
         variant: "destructive",
       });
     } finally {

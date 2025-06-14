@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
@@ -115,14 +116,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (error) {
         console.error('Login error:', error);
-        throw error;
+        
+        // Provide more specific error messages
+        if (error.message.includes('Invalid login credentials')) {
+          throw new Error('Invalid email or password. Please check your credentials and try again.');
+        } else if (error.message.includes('Email not confirmed')) {
+          throw new Error('Please confirm your email address before signing in.');
+        } else if (error.message.includes('Too many requests')) {
+          throw new Error('Too many login attempts. Please wait a few minutes before trying again.');
+        } else {
+          throw new Error(error.message || 'Login failed. Please try again.');
+        }
       }
 
       console.log('Login successful');
       // The onAuthStateChange will handle setting the user state
     } catch (error: any) {
       console.error('Login error:', error);
-      throw new Error(error.message || "Login failed");
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -132,6 +143,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(true);
     
     try {
+      console.log('Attempting signup with:', { email, role, name });
+      
+      // Validate email format before sending to Supabase
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new Error('Please enter a valid email address.');
+      }
+
       const redirectUrl = `${window.location.origin}/`;
       
       const { data, error } = await supabase.auth.signUp({
@@ -146,15 +165,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       });
 
+      console.log('Signup response:', { data, error });
+
       if (error) {
-        throw error;
+        console.error('Signup error:', error);
+        
+        // Provide more specific error messages
+        if (error.message.includes('User already registered')) {
+          throw new Error('An account with this email already exists. Please try signing in instead.');
+        } else if (error.message.includes('Password should be at least')) {
+          throw new Error('Password must be at least 6 characters long.');
+        } else if (error.message.includes('Email address') && error.message.includes('invalid')) {
+          throw new Error('Please enter a valid email address (e.g., user@gmail.com).');
+        } else if (error.message.includes('signup is disabled')) {
+          throw new Error('Account registration is currently disabled. Please contact support.');
+        } else {
+          throw new Error(error.message || 'Account creation failed. Please try again.');
+        }
       }
 
+      console.log('Signup successful:', data);
       // The user profile will be created automatically by the trigger
       // The onAuthStateChange will handle setting the user state
     } catch (error: any) {
       console.error('Signup error:', error);
-      throw new Error(error.message || "Signup failed");
+      throw error;
     } finally {
       setIsLoading(false);
     }

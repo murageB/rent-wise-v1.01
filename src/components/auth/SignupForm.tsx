@@ -26,10 +26,38 @@ const SignupForm = ({ onSignup, onSwitchToLogin }: SignupFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate form inputs
+    if (!name.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter your full name.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!email.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter your email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      toast({
+        title: "Validation Error",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (password !== confirmPassword) {
       toast({
-        title: "Error",
-        description: "Passwords do not match",
+        title: "Validation Error",
+        description: "Passwords do not match. Please try again.",
         variant: "destructive",
       });
       return;
@@ -39,10 +67,15 @@ const SignupForm = ({ onSignup, onSwitchToLogin }: SignupFormProps) => {
     
     try {
       await onSignup(email, password, role, name);
-    } catch (error) {
       toast({
-        title: "Signup Failed",
-        description: "An error occurred during signup",
+        title: "Account Created",
+        description: "Your account has been created successfully! You can now sign in.",
+      });
+    } catch (error: any) {
+      console.error('Signup form error:', error);
+      toast({
+        title: "Account Creation Failed",
+        description: error.message || "Unable to create account. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -90,7 +123,7 @@ const SignupForm = ({ onSignup, onSwitchToLogin }: SignupFormProps) => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
+              placeholder="Enter your email (e.g., user@gmail.com)"
               required
             />
           </div>
@@ -102,8 +135,9 @@ const SignupForm = ({ onSignup, onSwitchToLogin }: SignupFormProps) => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
+              placeholder="Enter your password (min 6 characters)"
               required
+              minLength={6}
             />
           </div>
           
