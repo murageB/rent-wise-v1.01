@@ -5,17 +5,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Search, MapPin, Edit, Users, Trash2 } from "lucide-react";
+import { Plus, Search, MapPin, Edit, Users, Trash2, Home } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+
+interface UnitType {
+  id: string;
+  name: string;
+  count: number;
+  occupied: number;
+  rentPerUnit: number;
+}
 
 interface Property {
   id: string;
   name: string;
   address: string;
   type: string;
-  units: number;
-  occupied: number;
-  monthlyRent: number;
+  unitTypes: UnitType[];
   status: "active" | "maintenance" | "vacant";
 }
 
@@ -31,9 +37,11 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
       name: "Sunset Apartments",
       address: "123 Main St, City, State 12345",
       type: "Apartment Complex",
-      units: 24,
-      occupied: 22,
-      monthlyRent: 2880000,
+      unitTypes: [
+        { id: "1a", name: "Studio", count: 8, occupied: 7, rentPerUnit: 80000 },
+        { id: "1b", name: "One Bedroom", count: 12, occupied: 11, rentPerUnit: 120000 },
+        { id: "1c", name: "Two Bedroom", count: 4, occupied: 4, rentPerUnit: 180000 }
+      ],
       status: "active"
     },
     {
@@ -41,9 +49,9 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
       name: "Downtown Loft",
       address: "456 Oak Ave, City, State 12345",
       type: "Single Family",
-      units: 1,
-      occupied: 1,
-      monthlyRent: 180000,
+      unitTypes: [
+        { id: "2a", name: "Loft", count: 1, occupied: 1, rentPerUnit: 180000 }
+      ],
       status: "active"
     },
     {
@@ -51,9 +59,11 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
       name: "Garden View Condos",
       address: "789 Pine Rd, City, State 12345",
       type: "Condominium",
-      units: 12,
-      occupied: 10,
-      monthlyRent: 1560000,
+      unitTypes: [
+        { id: "3a", name: "Bedsitter", count: 6, occupied: 5, rentPerUnit: 60000 },
+        { id: "3b", name: "One Bedroom", count: 4, occupied: 3, rentPerUnit: 100000 },
+        { id: "3c", name: "Three Bedroom", count: 2, occupied: 2, rentPerUnit: 250000 }
+      ],
       status: "maintenance"
     }
   ]);
@@ -61,22 +71,40 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
   const [newProperty, setNewProperty] = useState({
     name: "",
     address: "",
-    type: "",
-    units: "",
-    monthlyRent: ""
+    type: ""
+  });
+
+  const [newUnitType, setNewUnitType] = useState({
+    name: "",
+    count: "",
+    rentPerUnit: ""
   });
 
   const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isUnitTypesDialogOpen, setIsUnitTypesDialogOpen] = useState(false);
+  const [selectedPropertyForUnits, setSelectedPropertyForUnits] = useState<Property | null>(null);
 
   const filteredProperties = properties.filter(property =>
     property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     property.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const getTotalUnits = (property: Property) => {
+    return property.unitTypes.reduce((sum, unitType) => sum + unitType.count, 0);
+  };
+
+  const getTotalOccupied = (property: Property) => {
+    return property.unitTypes.reduce((sum, unitType) => sum + unitType.occupied, 0);
+  };
+
+  const getTotalMonthlyRent = (property: Property) => {
+    return property.unitTypes.reduce((sum, unitType) => sum + (unitType.occupied * unitType.rentPerUnit), 0);
+  };
+
   const handleAddProperty = () => {
-    if (!newProperty.name || !newProperty.address || !newProperty.type || !newProperty.units || !newProperty.monthlyRent) {
+    if (!newProperty.name || !newProperty.address || !newProperty.type) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -90,19 +118,17 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
       name: newProperty.name,
       address: newProperty.address,
       type: newProperty.type,
-      units: parseInt(newProperty.units),
-      occupied: 0,
-      monthlyRent: parseFloat(newProperty.monthlyRent),
+      unitTypes: [],
       status: "active"
     };
 
     setProperties([...properties, property]);
-    setNewProperty({ name: "", address: "", type: "", units: "", monthlyRent: "" });
+    setNewProperty({ name: "", address: "", type: "" });
     setIsAddDialogOpen(false);
     
     toast({
       title: "Success",
-      description: "Property added successfully",
+      description: "Property added successfully. You can now add unit types to this property.",
     });
   };
 
@@ -129,6 +155,51 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
     });
   };
 
+  const handleAddUnitType = () => {
+    if (!selectedPropertyForUnits || !newUnitType.name || !newUnitType.count || !newUnitType.rentPerUnit) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const unitType: UnitType = {
+      id: Date.now().toString(),
+      name: newUnitType.name,
+      count: parseInt(newUnitType.count),
+      occupied: 0,
+      rentPerUnit: parseFloat(newUnitType.rentPerUnit)
+    };
+
+    setProperties(properties.map(p => 
+      p.id === selectedPropertyForUnits.id 
+        ? { ...p, unitTypes: [...p.unitTypes, unitType] }
+        : p
+    ));
+
+    setNewUnitType({ name: "", count: "", rentPerUnit: "" });
+    
+    toast({
+      title: "Success",
+      description: "Unit type added successfully",
+    });
+  };
+
+  const handleDeleteUnitType = (propertyId: string, unitTypeId: string) => {
+    setProperties(properties.map(p => 
+      p.id === propertyId 
+        ? { ...p, unitTypes: p.unitTypes.filter(ut => ut.id !== unitTypeId) }
+        : p
+    ));
+    
+    toast({
+      title: "Success",
+      description: "Unit type deleted successfully",
+    });
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active": return "bg-green-100 text-green-800";
@@ -142,6 +213,11 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
     if (onNavigateToTenants) {
       onNavigateToTenants(propertyId);
     }
+  };
+
+  const handleManageUnitTypes = (property: Property) => {
+    setSelectedPropertyForUnits(property);
+    setIsUnitTypesDialogOpen(true);
   };
 
   return (
@@ -162,7 +238,7 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
             <DialogHeader>
               <DialogTitle>Add New Property</DialogTitle>
               <DialogDescription>
-                Enter the details for your new property.
+                Enter the basic details for your new property. You can add unit types after creating the property.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -191,26 +267,6 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
                   value={newProperty.type}
                   onChange={(e) => setNewProperty({...newProperty, type: e.target.value})}
                   placeholder="e.g., Apartment, Single Family, Condo"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="units">Number of Units</Label>
-                <Input
-                  id="units"
-                  type="number"
-                  value={newProperty.units}
-                  onChange={(e) => setNewProperty({...newProperty, units: e.target.value})}
-                  placeholder="Enter number of units"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="rent">Total Monthly Rent</Label>
-                <Input
-                  id="rent"
-                  type="number"
-                  value={newProperty.monthlyRent}
-                  onChange={(e) => setNewProperty({...newProperty, monthlyRent: e.target.value})}
-                  placeholder="Enter total monthly rent"
                 />
               </div>
             </div>
@@ -255,21 +311,33 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
               </div>
               
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Units:</span>
-                <span className="font-medium">{property.units}</span>
+                <span className="text-muted-foreground">Total Units:</span>
+                <span className="font-medium">{getTotalUnits(property)}</span>
               </div>
               
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Occupancy:</span>
                 <span className="font-medium">
-                  {property.occupied}/{property.units} ({Math.round((property.occupied / property.units) * 100)}%)
+                  {getTotalOccupied(property)}/{getTotalUnits(property)} ({getTotalUnits(property) > 0 ? Math.round((getTotalOccupied(property) / getTotalUnits(property)) * 100) : 0}%)
                 </span>
               </div>
+
+              {property.unitTypes.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-sm text-muted-foreground">Unit Types:</span>
+                  {property.unitTypes.map((unitType) => (
+                    <div key={unitType.id} className="flex justify-between text-xs bg-muted p-2 rounded">
+                      <span>{unitType.name}</span>
+                      <span>{unitType.occupied}/{unitType.count} - KES {unitType.rentPerUnit.toLocaleString()}/unit</span>
+                    </div>
+                  ))}
+                </div>
+              )}
               
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Monthly Revenue:</span>
                 <span className="font-medium text-green-600">
-                  KES {property.monthlyRent.toLocaleString()}
+                  KES {getTotalMonthlyRent(property).toLocaleString()}
                 </span>
               </div>
               
@@ -286,6 +354,18 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
                   <Edit className="h-3 w-3 mr-1" />
                   Edit
                 </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => handleManageUnitTypes(property)}
+                >
+                  <Home className="h-3 w-3 mr-1" />
+                  Units
+                </Button>
+              </div>
+              
+              <div className="flex space-x-2">
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -343,29 +423,88 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
                   onChange={(e) => setEditingProperty({...editingProperty, type: e.target.value})}
                 />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-units">Number of Units</Label>
-                <Input
-                  id="edit-units"
-                  type="number"
-                  value={editingProperty.units.toString()}
-                  onChange={(e) => setEditingProperty({...editingProperty, units: parseInt(e.target.value) || 0})}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-rent">Total Monthly Rent</Label>
-                <Input
-                  id="edit-rent"
-                  type="number"
-                  value={editingProperty.monthlyRent.toString()}
-                  onChange={(e) => setEditingProperty({...editingProperty, monthlyRent: parseFloat(e.target.value) || 0})}
-                />
-              </div>
             </div>
           )}
           <Button onClick={handleEditProperty} className="w-full">
             Update Property
           </Button>
+        </DialogContent>
+      </Dialog>
+
+      {/* Unit Types Management Dialog */}
+      <Dialog open={isUnitTypesDialogOpen} onOpenChange={setIsUnitTypesDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Manage Unit Types - {selectedPropertyForUnits?.name}</DialogTitle>
+            <DialogDescription>
+              Add and manage different unit types with their respective counts and rent prices.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            {/* Existing Unit Types */}
+            {selectedPropertyForUnits && selectedPropertyForUnits.unitTypes.length > 0 && (
+              <div className="space-y-3">
+                <h4 className="font-medium">Current Unit Types</h4>
+                {selectedPropertyForUnits.unitTypes.map((unitType) => (
+                  <div key={unitType.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex-1">
+                      <div className="font-medium">{unitType.name}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {unitType.count} units • {unitType.occupied} occupied • KES {unitType.rentPerUnit.toLocaleString()}/unit
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => selectedPropertyForUnits && handleDeleteUnitType(selectedPropertyForUnits.id, unitType.id)}
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Add New Unit Type */}
+            <div className="space-y-4 border-t pt-4">
+              <h4 className="font-medium">Add New Unit Type</h4>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="grid gap-2">
+                  <Label htmlFor="unit-name">Unit Type</Label>
+                  <Input
+                    id="unit-name"
+                    value={newUnitType.name}
+                    onChange={(e) => setNewUnitType({...newUnitType, name: e.target.value})}
+                    placeholder="e.g., Studio, 1BR, 2BR"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="unit-count">Count</Label>
+                  <Input
+                    id="unit-count"
+                    type="number"
+                    value={newUnitType.count}
+                    onChange={(e) => setNewUnitType({...newUnitType, count: e.target.value})}
+                    placeholder="Number of units"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="unit-rent">Rent per Unit</Label>
+                  <Input
+                    id="unit-rent"
+                    type="number"
+                    value={newUnitType.rentPerUnit}
+                    onChange={(e) => setNewUnitType({...newUnitType, rentPerUnit: e.target.value})}
+                    placeholder="Rent amount"
+                  />
+                </div>
+              </div>
+              <Button onClick={handleAddUnitType} className="w-full">
+                Add Unit Type
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
