@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
@@ -54,7 +53,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return null;
       }
 
-      return data;
+      // Cast the role to UserRole type to fix TypeScript error
+      return {
+        id: data.id,
+        email: data.email,
+        name: data.name,
+        role: data.role as UserRole
+      };
     } catch (error) {
       console.error('Error fetching user profile:', error);
       return null;
