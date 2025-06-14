@@ -1,57 +1,14 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Users, DollarSign, Wrench, FileText, Plus, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Building2, Users, DollarSign, TrendingUp, LogOut } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
-import PropertiesTab from "@/components/property-management/PropertiesTab";
-import TenantsTab from "@/components/property-management/TenantsTab";
-import RentTab from "@/components/property-management/RentTab";
-import MaintenanceTab from "@/components/property-management/MaintenanceTab";
-import ReportsTab from "@/components/property-management/ReportsTab";
-import PropertyForm from "@/components/property-management/PropertyForm";
 
 const Index = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
-  const [selectedPropertyFilter, setSelectedPropertyFilter] = useState<string | undefined>();
-  const [isAddPropertyDialogOpen, setIsAddPropertyDialogOpen] = useState(false);
-
-  // Mock data - updated to KES amounts
-  const stats = {
-    totalProperties: 12,
-    totalTenants: 28,
-    monthlyRevenue: 1540000,
-    pendingMaintenance: 5,
-    occupancyRate: 92
-  };
-
-  const handleNavigateToTenants = (propertyId?: string) => {
-    setSelectedPropertyFilter(propertyId);
-    setActiveTab("tenants");
-  };
-
-  const handleAddProperty = (propertyData: any) => {
-    // This would typically be handled by a global state or passed down
-    console.log("Adding property:", propertyData);
-    setIsAddPropertyDialogOpen(false);
-  };
-
-  const handleQuickActionAddProperty = () => {
-    setIsAddPropertyDialogOpen(true);
-  };
-
-  const handleQuickActionAddTenant = () => {
-    setActiveTab("tenants");
-  };
-
-  const handleQuickActionGenerateReport = () => {
-    setActiveTab("reports");
-  };
-
-  const handleQuickActionRecordPayment = () => {
-    setActiveTab("rent");
-  };
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -59,7 +16,7 @@ const Index = () => {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Property Management Dashboard</h1>
-            <p className="text-muted-foreground">Welcome, {user?.name} - Manage your properties, tenants, and finances all in one place</p>
+            <p className="text-muted-foreground">Welcome back, {user?.name}</p>
           </div>
           <Button onClick={logout} variant="outline">
             <LogOut className="mr-2 h-4 w-4" />
@@ -68,12 +25,11 @@ const Index = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="properties">Properties</TabsTrigger>
             <TabsTrigger value="tenants">Tenants</TabsTrigger>
-            <TabsTrigger value="rent">Rent</TabsTrigger>
-            <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
+            <TabsTrigger value="rent">Rent & Payments</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
           </TabsList>
 
@@ -82,22 +38,22 @@ const Index = () => {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Total Properties</CardTitle>
-                  <Building className="h-4 w-4 text-muted-foreground" />
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalProperties}</div>
+                  <div className="text-2xl font-bold">12</div>
                   <p className="text-xs text-muted-foreground">+2 from last month</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Tenants</CardTitle>
+                  <CardTitle className="text-sm font-medium">Active Tenants</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalTenants}</div>
-                  <p className="text-xs text-muted-foreground">Occupancy: {stats.occupancyRate}%</p>
+                  <div className="text-2xl font-bold">89</div>
+                  <p className="text-xs text-muted-foreground">95% occupancy rate</p>
                 </CardContent>
               </Card>
 
@@ -107,19 +63,19 @@ const Index = () => {
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">KES {stats.monthlyRevenue.toLocaleString()}</div>
-                  <p className="text-xs text-muted-foreground">+12% from last month</p>
+                  <div className="text-2xl font-bold">KES 2,450,000</div>
+                  <p className="text-xs text-muted-foreground">+8% from last month</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pending Maintenance</CardTitle>
-                  <Wrench className="h-4 w-4 text-muted-foreground" />
+                  <CardTitle className="text-sm font-medium">Growth Rate</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.pendingMaintenance}</div>
-                  <p className="text-xs text-muted-foreground">2 urgent requests</p>
+                  <div className="text-2xl font-bold">12.5%</div>
+                  <p className="text-xs text-muted-foreground">Year over year</p>
                 </CardContent>
               </Card>
             </div>
@@ -130,30 +86,29 @@ const Index = () => {
                   <CardTitle>Recent Activity</CardTitle>
                   <CardDescription>Latest updates from your properties</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Rent payment received</p>
-                      <p className="text-xs text-muted-foreground">Unit 2A - KES 120,000</p>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">New tenant moved in - Apt 3B</p>
+                        <p className="text-xs text-muted-foreground">2 hours ago</p>
+                      </div>
                     </div>
-                    <span className="text-xs text-muted-foreground">2h ago</span>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">Maintenance request</p>
-                      <p className="text-xs text-muted-foreground">Unit 1B - Leaky faucet</p>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Maintenance request completed</p>
+                        <p className="text-xs text-muted-foreground">5 hours ago</p>
+                      </div>
                     </div>
-                    <span className="text-xs text-muted-foreground">4h ago</span>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">New tenant application</p>
-                      <p className="text-xs text-muted-foreground">Sunset Apartments</p>
+                    <div className="flex items-center space-x-4">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Rent payment received</p>
+                        <p className="text-xs text-muted-foreground">1 day ago</p>
+                      </div>
                     </div>
-                    <span className="text-xs text-muted-foreground">1d ago</span>
                   </div>
                 </CardContent>
               </Card>
@@ -164,37 +119,17 @@ const Index = () => {
                   <CardDescription>Common tasks and shortcuts</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button 
-                    className="w-full justify-start" 
-                    variant="outline"
-                    onClick={handleQuickActionAddProperty}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
+                  <Button className="w-full justify-start" variant="outline">
+                    <Building2 className="mr-2 h-4 w-4" />
                     Add New Property
                   </Button>
-                  <Button 
-                    className="w-full justify-start" 
-                    variant="outline"
-                    onClick={handleQuickActionAddTenant}
-                  >
+                  <Button className="w-full justify-start" variant="outline">
                     <Users className="mr-2 h-4 w-4" />
-                    Add New Tenant
+                    Register New Tenant
                   </Button>
-                  <Button 
-                    className="w-full justify-start" 
-                    variant="outline"
-                    onClick={handleQuickActionGenerateReport}
-                  >
-                    <FileText className="mr-2 h-4 w-4" />
-                    Generate Report
-                  </Button>
-                  <Button 
-                    className="w-full justify-start" 
-                    variant="outline"
-                    onClick={handleQuickActionRecordPayment}
-                  >
+                  <Button className="w-full justify-start" variant="outline">
                     <DollarSign className="mr-2 h-4 w-4" />
-                    Record Payment
+                    Generate Report
                   </Button>
                 </CardContent>
               </Card>
@@ -202,32 +137,53 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="properties">
-            <PropertiesTab onNavigateToTenants={handleNavigateToTenants} />
+            <Card>
+              <CardHeader>
+                <CardTitle>Property Management</CardTitle>
+                <CardDescription>Manage your property portfolio</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Property management features will be implemented here.</p>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="tenants">
-            <TenantsTab selectedPropertyFilter={selectedPropertyFilter} />
+            <Card>
+              <CardHeader>
+                <CardTitle>Tenant Management</CardTitle>
+                <CardDescription>Manage tenant information and leases</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Tenant management features will be implemented here.</p>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="rent">
-            <RentTab />
-          </TabsContent>
-
-          <TabsContent value="maintenance">
-            <MaintenanceTab />
+            <Card>
+              <CardHeader>
+                <CardTitle>Rent & Payments</CardTitle>
+                <CardDescription>Track rent payments and financial data</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Rent and payment features will be implemented here.</p>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="reports">
-            <ReportsTab />
+            <Card>
+              <CardHeader>
+                <CardTitle>Reports & Analytics</CardTitle>
+                <CardDescription>View detailed reports and analytics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">Reports and analytics features will be implemented here.</p>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
-
-        <PropertyForm
-          isOpen={isAddPropertyDialogOpen}
-          onOpenChange={setIsAddPropertyDialogOpen}
-          onSubmit={handleAddProperty}
-          mode="add"
-        />
       </div>
     </div>
   );
