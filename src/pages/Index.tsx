@@ -1,14 +1,19 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Building2, Users, DollarSign, TrendingUp, LogOut } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
+import PropertiesTab from "@/components/property-management/PropertiesTab";
 
 const Index = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
+
+  const handleNavigateToTenants = (propertyId?: string) => {
+    setActiveTab("tenants");
+    // You can use propertyId to filter tenants by property if needed
+  };
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -137,15 +142,7 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="properties">
-            <Card>
-              <CardHeader>
-                <CardTitle>Property Management</CardTitle>
-                <CardDescription>Manage your property portfolio</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Property management features will be implemented here.</p>
-              </CardContent>
-            </Card>
+            <PropertiesTab onNavigateToTenants={handleNavigateToTenants} />
           </TabsContent>
 
           <TabsContent value="tenants">
