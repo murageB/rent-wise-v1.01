@@ -20,9 +20,10 @@ interface PropertyFormProps {
   property?: Property | null;
   onSubmit: (property: any) => void;
   mode: "add" | "edit";
+  showTrigger?: boolean;
 }
 
-const PropertyForm = ({ isOpen, onOpenChange, property, onSubmit, mode }: PropertyFormProps) => {
+const PropertyForm = ({ isOpen, onOpenChange, property, onSubmit, mode, showTrigger = false }: PropertyFormProps) => {
   const isEditMode = mode === "edit" && property;
   
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,7 +44,7 @@ const PropertyForm = ({ isOpen, onOpenChange, property, onSubmit, mode }: Proper
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      {mode === "add" && (
+      {showTrigger && (
         <DialogTrigger asChild>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
