@@ -5,14 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Building2, Users, DollarSign, TrendingUp, LogOut } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import PropertiesTab from "@/components/property-management/PropertiesTab";
+import TenantsTab from "@/components/property-management/TenantsTab";
+import RentTab from "@/components/property-management/RentTab";
+import ReportsTab from "@/components/property-management/ReportsTab";
+import MaintenanceTab from "@/components/property-management/MaintenanceTab";
 
 const Index = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
+  const [selectedPropertyFilter, setSelectedPropertyFilter] = useState<string>();
 
   const handleNavigateToTenants = (propertyId?: string) => {
+    setSelectedPropertyFilter(propertyId);
     setActiveTab("tenants");
-    // You can use propertyId to filter tenants by property if needed
   };
 
   return (
@@ -30,11 +35,12 @@ const Index = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="properties">Properties</TabsTrigger>
             <TabsTrigger value="tenants">Tenants</TabsTrigger>
             <TabsTrigger value="rent">Rent & Payments</TabsTrigger>
+            <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
           </TabsList>
 
@@ -146,39 +152,19 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="tenants">
-            <Card>
-              <CardHeader>
-                <CardTitle>Tenant Management</CardTitle>
-                <CardDescription>Manage tenant information and leases</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Tenant management features will be implemented here.</p>
-              </CardContent>
-            </Card>
+            <TenantsTab selectedPropertyFilter={selectedPropertyFilter} />
           </TabsContent>
 
           <TabsContent value="rent">
-            <Card>
-              <CardHeader>
-                <CardTitle>Rent & Payments</CardTitle>
-                <CardDescription>Track rent payments and financial data</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Rent and payment features will be implemented here.</p>
-              </CardContent>
-            </Card>
+            <RentTab />
+          </TabsContent>
+
+          <TabsContent value="maintenance">
+            <MaintenanceTab />
           </TabsContent>
 
           <TabsContent value="reports">
-            <Card>
-              <CardHeader>
-                <CardTitle>Reports & Analytics</CardTitle>
-                <CardDescription>View detailed reports and analytics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">Reports and analytics features will be implemented here.</p>
-              </CardContent>
-            </Card>
+            <ReportsTab />
           </TabsContent>
         </Tabs>
       </div>
