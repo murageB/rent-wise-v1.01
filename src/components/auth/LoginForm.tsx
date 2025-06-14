@@ -14,12 +14,12 @@ interface LoginFormProps {
 const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSubmitting(true);
     
     try {
       await onLogin(email, password);
@@ -34,8 +34,7 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
         description: error.message || "Unable to sign in. Please check your credentials and try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -56,6 +55,7 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
+              disabled={isSubmitting}
             />
           </div>
           
@@ -68,11 +68,12 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
+              disabled={isSubmitting}
             />
           </div>
           
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : "Sign In"}
           </Button>
           
           <div className="text-center">
@@ -81,6 +82,7 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
               variant="link"
               onClick={onSwitchToSignup}
               className="text-sm"
+              disabled={isSubmitting}
             >
               Don't have an account? Sign up
             </Button>

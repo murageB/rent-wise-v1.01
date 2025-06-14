@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
 
@@ -40,8 +40,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch user profile from profiles table
-  const fetchUserProfile = async (userId: string): Promise<UserProfile | null> => {
+  // Memoized profile fetcher to avoid recreating the function
+  const fetchUserProfile = useCallback(async (userId: string): Promise<UserProfile | null> => {
     try {
       console.log('Fetching user profile for ID:', userId);
       const { data, error } = await supabase
@@ -57,7 +57,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       console.log('User profile data:', data);
 
-      // Cast the role to UserRole type to fix TypeScript error
       return {
         id: data.id,
         email: data.email,
@@ -68,39 +67,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.error('Error fetching user profile:', error);
       return null;
     }
-  };
+  }, []);
+
+  // Optimized auth state handler
+  const handleAuthStateChange = useCallback(async (event: string, session: Session | null) => {
+    console.log('Auth state changed:', event);
+    setSession(session);
+    
+    if (session?.user && event !== 'TOKEN_REFRESHED') {
+      // Only fetch profile on actual login/signup, not token refresh
+      const profile = await fetchUserProfile(session.user.id);
+      setUser(profile);
+    } else if (!session) {
+      setUser(null);
+    }
+    
+    setIsLoading(false);
+  }, [fetchUserProfile]);
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session);
-        setSession(session);
-        
-        if (session?.user) {
-          // Fetch user profile from database
-          const profile = await fetchUserProfile(session.user.id);
-          console.log('Fetched profile:', profile);
-          setUser(profile);
-        } else {
-          setUser(null);
-        }
-        
+    // Get initial session first
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        handleAuthStateChange('INITIAL_SESSION', session);
+      } else {
         setIsLoading(false);
       }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session?.user) {
-        fetchUserProfile(session.user.id).then(setUser);
-      }
-      setIsLoading(false);
     });
 
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthStateChange);
+
     return () => subscription.unsubscribe();
-  }, []);
+  }, [handleAuthStateChange]);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -117,7 +116,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (error) {
         console.error('Login error:', error);
         
-        // Provide more specific error messages
         if (error.message.includes('Invalid login credentials')) {
           throw new Error('Invalid email or password. Please check your credentials and try again.');
         } else if (error.message.includes('Email not confirmed')) {
@@ -130,12 +128,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       console.log('Login successful');
-      // The onAuthStateChange will handle setting the user state
+      // The auth state change handler will manage the rest
     } catch (error: any) {
       console.error('Login error:', error);
-      throw error;
-    } finally {
       setIsLoading(false);
+      throw error;
     }
   };
 
@@ -145,7 +142,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       console.log('Attempting signup with:', { email, role, name });
       
-      // Validate email format before sending to Supabase
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         throw new Error('Please enter a valid email address.');
@@ -170,7 +166,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (error) {
         console.error('Signup error:', error);
         
-        // Provide more specific error messages
         if (error.message.includes('User already registered')) {
           throw new Error('An account with this email already exists. Please try signing in instead.');
         } else if (error.message.includes('Password should be at least')) {
@@ -185,13 +180,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       console.log('Signup successful:', data);
-      // The user profile will be created automatically by the trigger
-      // The onAuthStateChange will handle setting the user state
     } catch (error: any) {
       console.error('Signup error:', error);
-      throw error;
-    } finally {
       setIsLoading(false);
+      throw error;
     }
   };
 
@@ -201,7 +193,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (error) {
         throw error;
       }
-      // The onAuthStateChange will handle clearing the user state
     } catch (error: any) {
       console.error('Logout error:', error);
       throw new Error(error.message || "Logout failed");
