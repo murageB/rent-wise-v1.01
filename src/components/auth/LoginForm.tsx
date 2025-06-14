@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 
 interface LoginFormProps {
-  onLogin: (email: string, password: string) => void;
+  onLogin: (email: string, password: string) => Promise<void>;
   onSwitchToSignup: () => void;
 }
 
@@ -20,16 +20,13 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (isSubmitting) return; // Prevent double submission
+    if (isSubmitting) return;
     
     setIsSubmitting(true);
     
     try {
       await onLogin(email, password);
-      toast({
-        title: "Success",
-        description: "You have been signed in successfully.",
-      });
+      // Success toast will be shown by the parent component after redirect
     } catch (error: any) {
       console.error('Login form error:', error);
       toast({
@@ -37,9 +34,9 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
         description: error.message || "Unable to sign in. Please check your credentials and try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Reset loading state on error
     }
+    // Don't reset isSubmitting on success - let the redirect handle it
   };
 
   return (

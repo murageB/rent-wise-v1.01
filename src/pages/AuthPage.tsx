@@ -11,6 +11,7 @@ const AuthPage = () => {
   const handleLogin = async (email: string, password: string) => {
     console.log('AuthPage: Attempting login with:', email);
     await login(email, password);
+    // Login function will throw an error if it fails, otherwise auth state will handle redirect
   };
 
   return (
