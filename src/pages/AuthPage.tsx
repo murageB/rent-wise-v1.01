@@ -9,8 +9,8 @@ const AuthPage = () => {
   const { login, signup } = useAuth();
 
   const handleLogin = async (email: string, password: string) => {
-    // The role will be fetched from the user's profile in the database
-    await login(email, password, "tenant"); // Role parameter is ignored now
+    console.log('AuthPage: Attempting login with:', email);
+    await login(email, password);
   };
 
   return (

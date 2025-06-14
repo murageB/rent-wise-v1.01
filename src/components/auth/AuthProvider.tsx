@@ -15,7 +15,7 @@ interface AuthContextType {
   user: UserProfile | null;
   session: Session | null;
   isLoading: boolean;
-  login: (email: string, password: string, role: UserRole) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, role: UserRole, name: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Fetch user profile from profiles table
   const fetchUserProfile = async (userId: string): Promise<UserProfile | null> => {
     try {
+      console.log('Fetching user profile for ID:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -52,6 +53,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         console.error('Error fetching user profile:', error);
         return null;
       }
+
+      console.log('User profile data:', data);
 
       // Cast the role to UserRole type to fix TypeScript error
       return {
@@ -76,6 +79,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (session?.user) {
           // Fetch user profile from database
           const profile = await fetchUserProfile(session.user.id);
+          console.log('Fetched profile:', profile);
           setUser(profile);
         } else {
           setUser(null);
@@ -97,19 +101,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string, role: UserRole) => {
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
     
     try {
+      console.log('Attempting login with email:', email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      console.log('Login response:', { data, error });
+
       if (error) {
+        console.error('Login error:', error);
         throw error;
       }
 
+      console.log('Login successful');
       // The onAuthStateChange will handle setting the user state
     } catch (error: any) {
       console.error('Login error:', error);
