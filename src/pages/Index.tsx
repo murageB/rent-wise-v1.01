@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,6 +21,14 @@ const Index = () => {
     setActiveTab("tenants");
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
@@ -28,7 +37,7 @@ const Index = () => {
             <h1 className="text-3xl font-bold mb-2">Property Management Dashboard</h1>
             <p className="text-muted-foreground">Welcome back, {user?.name}</p>
           </div>
-          <Button onClick={logout} variant="outline">
+          <Button onClick={handleLogout} variant="outline">
             <LogOut className="mr-2 h-4 w-4" />
             Logout
           </Button>

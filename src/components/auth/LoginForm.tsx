@@ -4,20 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
-type UserRole = "landlord" | "caretaker" | "tenant";
-
 interface LoginFormProps {
-  onLogin: (email: string, password: string, role: UserRole) => void;
+  onLogin: (email: string, password: string) => void;
   onSwitchToSignup: () => void;
 }
 
 const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("tenant");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -26,11 +22,11 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
     setIsLoading(true);
     
     try {
-      await onLogin(email, password, role);
-    } catch (error) {
+      await onLogin(email, password);
+    } catch (error: any) {
       toast({
         title: "Login Failed",
-        description: "Invalid email or password",
+        description: error.message || "Invalid email or password",
         variant: "destructive",
       });
     } finally {
@@ -46,20 +42,6 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="role">I am a</Label>
-            <Select value={role} onValueChange={(value: UserRole) => setRole(value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select your role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="tenant">Tenant</SelectItem>
-                <SelectItem value="caretaker">Caretaker</SelectItem>
-                <SelectItem value="landlord">Landlord</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
