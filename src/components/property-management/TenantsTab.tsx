@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Search, Phone, Mail, Calendar, Edit, DollarSign, Trash2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus, Search, Mail, Edit, Trash2, Phone, MapPin } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Tenant {
@@ -14,78 +14,91 @@ interface Tenant {
   name: string;
   email: string;
   phone: string;
-  property: string;
+  propertyId: string;
   unit: string;
-  rentAmount: number;
-  leaseStart: string;
-  leaseEnd: string;
-  status: "active" | "late" | "notice" | "inactive";
+  rent: number;
+  status: "active" | "pending" | "inactive";
 }
 
-const TenantsTab = () => {
+interface TenantsTabProps {
+  selectedPropertyFilter?: string;
+}
+
+const TenantsTab = ({ selectedPropertyFilter }: TenantsTabProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingTenant, setEditingTenant] = useState<Tenant | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [propertyFilter, setPropertyFilter] = useState("all");
+
   const [tenants, setTenants] = useState<Tenant[]>([
     {
       id: "1",
       name: "John Smith",
-      email: "john.smith@email.com",
-      phone: "(555) 123-4567",
-      property: "Sunset Apartments",
+      email: "john.123@example.com",
+      phone: "123-456-7890",
+      propertyId: "1",
       unit: "2A",
-      rentAmount: 120000,
-      leaseStart: "2024-01-01",
-      leaseEnd: "2024-12-31",
+      rent: 120000,
       status: "active"
     },
     {
       id: "2",
-      name: "Sarah Johnson",
-      email: "sarah.j@email.com",
-      phone: "(555) 987-6543",
-      property: "Downtown Loft",
-      unit: "1",
-      rentAmount: 180000,
-      leaseStart: "2024-03-01",
-      leaseEnd: "2025-02-28",
-      status: "active"
+      name: "Alice Johnson",
+      email: "alice.johnson@example.com",
+      phone: "987-654-3210",
+      propertyId: "1",
+      unit: "3B",
+      rent: 135000,
+      status: "pending"
     },
     {
       id: "3",
-      name: "Mike Davis",
-      email: "mike.davis@email.com",
-      phone: "(555) 456-7890",
-      property: "Garden View Condos",
-      unit: "3B",
-      rentAmount: 130000,
-      leaseStart: "2023-12-01",
-      leaseEnd: "2024-11-30",
-      status: "late"
+      name: "Bob Williams",
+      email: "bob.williams@example.com",
+      phone: "555-123-4567",
+      propertyId: "2",
+      unit: "Loft",
+      rent: 180000,
+      status: "active"
     }
+  ]);
+
+  const [properties] = useState([
+    { id: "1", name: "Sunset Apartments" },
+    { id: "2", name: "Downtown Loft" },
+    { id: "3", name: "Garden View Condos" }
   ]);
 
   const [newTenant, setNewTenant] = useState({
     name: "",
     email: "",
     phone: "",
-    property: "",
+    propertyId: "1",
     unit: "",
-    rentAmount: "",
-    leaseStart: "",
-    leaseEnd: ""
+    rent: ""
   });
 
-  const filteredTenants = tenants.filter(tenant =>
-    tenant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tenant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    tenant.property.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [editingTenant, setEditingTenant] = useState<Tenant | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  // Set property filter when navigated from Properties tab
+  useEffect(() => {
+    if (selectedPropertyFilter) {
+      setPropertyFilter(selectedPropertyFilter);
+    }
+  }, [selectedPropertyFilter]);
+
+  const filteredTenants = tenants.filter(tenant => {
+    const matchesSearch = tenant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         tenant.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === "all" || tenant.status === statusFilter;
+    const matchesProperty = propertyFilter === "all" || tenant.propertyId === propertyFilter;
+    
+    return matchesSearch && matchesStatus && matchesProperty;
+  });
 
   const handleAddTenant = () => {
-    if (!newTenant.name || !newTenant.email || !newTenant.phone || !newTenant.property || !newTenant.unit || !newTenant.rentAmount || !newTenant.leaseStart || !newTenant.leaseEnd) {
+    if (!newTenant.name || !newTenant.email || !newTenant.phone || !newTenant.propertyId || !newTenant.unit || !newTenant.rent) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
@@ -99,16 +112,14 @@ const TenantsTab = () => {
       name: newTenant.name,
       email: newTenant.email,
       phone: newTenant.phone,
-      property: newTenant.property,
+      propertyId: newTenant.propertyId,
       unit: newTenant.unit,
-      rentAmount: parseFloat(newTenant.rentAmount),
-      leaseStart: newTenant.leaseStart,
-      leaseEnd: newTenant.leaseEnd,
+      rent: parseFloat(newTenant.rent),
       status: "active"
     };
 
     setTenants([...tenants, tenant]);
-    setNewTenant({ name: "", email: "", phone: "", property: "", unit: "", rentAmount: "", leaseStart: "", leaseEnd: "" });
+    setNewTenant({ name: "", email: "", phone: "", propertyId: "1", unit: "", rent: "" });
     setIsAddDialogOpen(false);
     
     toast({
@@ -136,16 +147,15 @@ const TenantsTab = () => {
     setTenants(tenants.filter(t => t.id !== id));
     toast({
       title: "Success",
-      description: "Tenant removed successfully",
+      description: "Tenant deleted successfully",
     });
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active": return "bg-green-100 text-green-800";
-      case "late": return "bg-red-100 text-red-800";
-      case "notice": return "bg-yellow-100 text-yellow-800";
-      case "inactive": return "bg-gray-100 text-gray-800";
+      case "pending": return "bg-yellow-100 text-yellow-800";
+      case "inactive": return "bg-red-100 text-red-800";
       default: return "bg-gray-100 text-gray-800";
     }
   };
@@ -155,7 +165,7 @@ const TenantsTab = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">Tenants</h2>
-          <p className="text-muted-foreground">Manage your tenant relationships</p>
+          <p className="text-muted-foreground">Manage your tenants and their details</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
@@ -168,23 +178,23 @@ const TenantsTab = () => {
             <DialogHeader>
               <DialogTitle>Add New Tenant</DialogTitle>
               <DialogDescription>
-                Enter the details for your new tenant.
+                Enter the details for the new tenant.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
+            <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="tenant-name">Full Name</Label>
+                <Label htmlFor="name">Tenant Name</Label>
                 <Input
-                  id="tenant-name"
+                  id="name"
                   value={newTenant.name}
                   onChange={(e) => setNewTenant({...newTenant, name: e.target.value})}
                   placeholder="Enter tenant name"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="tenant-email">Email</Label>
+                <Label htmlFor="email">Email Address</Label>
                 <Input
-                  id="tenant-email"
+                  id="email"
                   type="email"
                   value={newTenant.email}
                   onChange={(e) => setNewTenant({...newTenant, email: e.target.value})}
@@ -192,58 +202,46 @@ const TenantsTab = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="tenant-phone">Phone</Label>
+                <Label htmlFor="phone">Phone Number</Label>
                 <Input
-                  id="tenant-phone"
+                  id="phone"
                   value={newTenant.phone}
                   onChange={(e) => setNewTenant({...newTenant, phone: e.target.value})}
                   placeholder="Enter phone number"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="tenant-property">Property</Label>
-                <Input
-                  id="tenant-property"
-                  value={newTenant.property}
-                  onChange={(e) => setNewTenant({...newTenant, property: e.target.value})}
-                  placeholder="Enter property name"
-                />
+                <Label htmlFor="property">Property</Label>
+                <Select onValueChange={(value) => setNewTenant({...newTenant, propertyId: value})}>
+                  <SelectTrigger className="w-[220px]">
+                    <SelectValue placeholder="Select a property" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {properties.map((property) => (
+                      <SelectItem key={property.id} value={property.id}>
+                        {property.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="tenant-unit">Unit</Label>
+                <Label htmlFor="unit">Unit Number</Label>
                 <Input
-                  id="tenant-unit"
+                  id="unit"
                   value={newTenant.unit}
                   onChange={(e) => setNewTenant({...newTenant, unit: e.target.value})}
                   placeholder="Enter unit number"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="tenant-rent">Monthly Rent (KES)</Label>
+                <Label htmlFor="rent">Monthly Rent</Label>
                 <Input
-                  id="tenant-rent"
+                  id="rent"
                   type="number"
-                  value={newTenant.rentAmount}
-                  onChange={(e) => setNewTenant({...newTenant, rentAmount: e.target.value})}
-                  placeholder="Enter monthly rent amount in KES"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="tenant-lease-start">Lease Start Date</Label>
-                <Input
-                  id="tenant-lease-start"
-                  type="date"
-                  value={newTenant.leaseStart}
-                  onChange={(e) => setNewTenant({...newTenant, leaseStart: e.target.value})}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="tenant-lease-end">Lease End Date</Label>
-                <Input
-                  id="tenant-lease-end"
-                  type="date"
-                  value={newTenant.leaseEnd}
-                  onChange={(e) => setNewTenant({...newTenant, leaseEnd: e.target.value})}
+                  value={newTenant.rent}
+                  onChange={(e) => setNewTenant({...newTenant, rent: e.target.value})}
+                  placeholder="Enter monthly rent"
                 />
               </div>
             </div>
@@ -254,116 +252,108 @@ const TenantsTab = () => {
         </Dialog>
       </div>
 
-      <div className="flex items-center space-x-2">
-        <Search className="h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search tenants..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm"
-        />
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex items-center space-x-2 flex-1">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search tenants..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="max-w-sm"
+          />
+        </div>
+        
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="inactive">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={propertyFilter} onValueChange={setPropertyFilter}>
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Filter by property" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Properties</SelectItem>
+            {properties.map((property) => (
+              <SelectItem key={property.id} value={property.id}>
+                {property.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>All Tenants</CardTitle>
-          <CardDescription>
-            Complete list of tenants across all properties
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Tenant</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Property/Unit</TableHead>
-                <TableHead>Rent</TableHead>
-                <TableHead>Lease Period</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredTenants.map((tenant) => (
-                <TableRow key={tenant.id}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{tenant.name}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="flex items-center text-sm">
-                        <Mail className="h-3 w-3 mr-1" />
-                        {tenant.email}
-                      </div>
-                      <div className="flex items-center text-sm">
-                        <Phone className="h-3 w-3 mr-1" />
-                        {tenant.phone}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{tenant.property}</div>
-                      <div className="text-sm text-muted-foreground">Unit {tenant.unit}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center">
-                      <DollarSign className="h-3 w-3 mr-1" />
-                      KES {tenant.rentAmount.toLocaleString()}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center text-sm">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      <div>
-                        <div>{new Date(tenant.leaseStart).toLocaleDateString()}</div>
-                        <div className="text-muted-foreground">to {new Date(tenant.leaseEnd).toLocaleDateString()}</div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={getStatusColor(tenant.status)}>
-                      {tenant.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-1">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          setEditingTenant(tenant);
-                          setIsEditDialogOpen(true);
-                        }}
-                      >
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => window.open(`mailto:${tenant.email}`, '_blank')}
-                      >
-                        <Mail className="h-3 w-3" />
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleDeleteTenant(tenant.id)}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredTenants.map((tenant) => (
+          <Card key={tenant.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex justify-between items-start">
+                <div>
+                  <CardTitle className="text-lg">{tenant.name}</CardTitle>
+                  <CardDescription className="flex items-center mt-1">
+                    <MapPin className="h-3 w-3 mr-1" />
+                    Unit {tenant.unit}, {properties.find(p => p.id === tenant.propertyId)?.name}
+                  </CardDescription>
+                </div>
+                <Badge className={getStatusColor(tenant.status)}>
+                  {tenant.status}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Email:</span>
+                <a href={`mailto:${tenant.email}`} className="font-medium text-blue-600 hover:underline">
+                  {tenant.email}
+                </a>
+              </div>
+              
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Phone:</span>
+                <a href={`tel:${tenant.phone}`} className="font-medium text-blue-600 hover:underline">
+                  {tenant.phone}
+                </a>
+              </div>
+              
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Rent:</span>
+                <span className="font-medium text-green-600">
+                  KES {tenant.rent.toLocaleString()}
+                </span>
+              </div>
+              
+              <div className="flex space-x-2 pt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => {
+                    setEditingTenant(tenant);
+                    setIsEditDialogOpen(true);
+                  }}
+                >
+                  <Edit className="h-3 w-3 mr-1" />
+                  Edit
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleDeleteTenant(tenant.id)}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {/* Edit Tenant Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -375,9 +365,9 @@ const TenantsTab = () => {
             </DialogDescription>
           </DialogHeader>
           {editingTenant && (
-            <div className="grid gap-4 py-4 max-h-[60vh] overflow-y-auto">
+            <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="edit-name">Full Name</Label>
+                <Label htmlFor="edit-name">Tenant Name</Label>
                 <Input
                   id="edit-name"
                   value={editingTenant.name}
@@ -385,7 +375,7 @@ const TenantsTab = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-email">Email</Label>
+                <Label htmlFor="edit-email">Email Address</Label>
                 <Input
                   id="edit-email"
                   type="email"
@@ -394,7 +384,7 @@ const TenantsTab = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-phone">Phone</Label>
+                <Label htmlFor="edit-phone">Phone Number</Label>
                 <Input
                   id="edit-phone"
                   value={editingTenant.phone}
@@ -403,14 +393,21 @@ const TenantsTab = () => {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="edit-property">Property</Label>
-                <Input
-                  id="edit-property"
-                  value={editingTenant.property}
-                  onChange={(e) => setEditingTenant({...editingTenant, property: e.target.value})}
-                />
+                  <Select value={editingTenant.propertyId} onValueChange={(value) => setEditingTenant({...editingTenant, propertyId: value})}>
+                    <SelectTrigger className="w-[220px]">
+                      <SelectValue placeholder="Select a property" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {properties.map((property) => (
+                        <SelectItem key={property.id} value={property.id}>
+                          {property.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-unit">Unit</Label>
+                <Label htmlFor="edit-unit">Unit Number</Label>
                 <Input
                   id="edit-unit"
                   value={editingTenant.unit}
@@ -418,30 +415,12 @@ const TenantsTab = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="edit-rent">Monthly Rent (KES)</Label>
+                <Label htmlFor="edit-rent">Monthly Rent</Label>
                 <Input
                   id="edit-rent"
                   type="number"
-                  value={editingTenant.rentAmount.toString()}
-                  onChange={(e) => setEditingTenant({...editingTenant, rentAmount: parseFloat(e.target.value) || 0})}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-lease-start">Lease Start Date</Label>
-                <Input
-                  id="edit-lease-start"
-                  type="date"
-                  value={editingTenant.leaseStart}
-                  onChange={(e) => setEditingTenant({...editingTenant, leaseStart: e.target.value})}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="edit-lease-end">Lease End Date</Label>
-                <Input
-                  id="edit-lease-end"
-                  type="date"
-                  value={editingTenant.leaseEnd}
-                  onChange={(e) => setEditingTenant({...editingTenant, leaseEnd: e.target.value})}
+                  value={editingTenant.rent.toString()}
+                  onChange={(e) => setEditingTenant({...editingTenant, rent: parseFloat(e.target.value) || 0})}
                 />
               </div>
             </div>

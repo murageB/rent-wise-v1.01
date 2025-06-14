@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,11 @@ interface Property {
   status: "active" | "maintenance" | "vacant";
 }
 
-const PropertiesTab = () => {
+interface PropertiesTabProps {
+  onNavigateToTenants?: (propertyId?: string) => void;
+}
+
+const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [properties, setProperties] = useState<Property[]>([
     {
@@ -30,7 +33,7 @@ const PropertiesTab = () => {
       type: "Apartment Complex",
       units: 24,
       occupied: 22,
-      monthlyRent: 28800,
+      monthlyRent: 2880000,
       status: "active"
     },
     {
@@ -40,7 +43,7 @@ const PropertiesTab = () => {
       type: "Single Family",
       units: 1,
       occupied: 1,
-      monthlyRent: 1800,
+      monthlyRent: 180000,
       status: "active"
     },
     {
@@ -50,7 +53,7 @@ const PropertiesTab = () => {
       type: "Condominium",
       units: 12,
       occupied: 10,
-      monthlyRent: 15600,
+      monthlyRent: 1560000,
       status: "maintenance"
     }
   ]);
@@ -132,6 +135,12 @@ const PropertiesTab = () => {
       case "maintenance": return "bg-yellow-100 text-yellow-800";
       case "vacant": return "bg-red-100 text-red-800";
       default: return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const handleViewTenants = (propertyId: string) => {
+    if (onNavigateToTenants) {
+      onNavigateToTenants(propertyId);
     }
   };
 
@@ -260,7 +269,7 @@ const PropertiesTab = () => {
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Monthly Revenue:</span>
                 <span className="font-medium text-green-600">
-                  ${property.monthlyRent.toLocaleString()}
+                  KES {property.monthlyRent.toLocaleString()}
                 </span>
               </div>
               
@@ -277,7 +286,12 @@ const PropertiesTab = () => {
                   <Edit className="h-3 w-3 mr-1" />
                   Edit
                 </Button>
-                <Button variant="outline" size="sm" className="flex-1">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => handleViewTenants(property.id)}
+                >
                   <Users className="h-3 w-3 mr-1" />
                   Tenants
                 </Button>

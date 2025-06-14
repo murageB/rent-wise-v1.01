@@ -11,6 +11,7 @@ import ReportsTab from "@/components/property-management/ReportsTab";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [selectedPropertyFilter, setSelectedPropertyFilter] = useState<string | undefined>();
 
   // Mock data - updated to KES amounts
   const stats = {
@@ -19,6 +20,11 @@ const Index = () => {
     monthlyRevenue: 1540000,
     pendingMaintenance: 5,
     occupancyRate: 92
+  };
+
+  const handleNavigateToTenants = (propertyId?: string) => {
+    setSelectedPropertyFilter(propertyId);
+    setActiveTab("tenants");
   };
 
   return (
@@ -148,11 +154,11 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="properties">
-            <PropertiesTab />
+            <PropertiesTab onNavigateToTenants={handleNavigateToTenants} />
           </TabsContent>
 
           <TabsContent value="tenants">
-            <TenantsTab />
+            <TenantsTab selectedPropertyFilter={selectedPropertyFilter} />
           </TabsContent>
 
           <TabsContent value="rent">
