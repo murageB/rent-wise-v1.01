@@ -19,6 +19,9 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isSubmitting) return; // Prevent double submission
+    
     setIsSubmitting(true);
     
     try {
@@ -34,6 +37,7 @@ const LoginForm = ({ onLogin, onSwitchToSignup }: LoginFormProps) => {
         description: error.message || "Unable to sign in. Please check your credentials and try again.",
         variant: "destructive",
       });
+    } finally {
       setIsSubmitting(false);
     }
   };

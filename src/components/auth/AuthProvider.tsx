@@ -40,10 +40,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Memoized profile fetcher to avoid recreating the function
   const fetchUserProfile = useCallback(async (userId: string): Promise<UserProfile | null> => {
     try {
-      console.log('Fetching user profile for ID:', userId);
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -54,8 +52,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         console.error('Error fetching user profile:', error);
         return null;
       }
-
-      console.log('User profile data:', data);
 
       return {
         id: data.id,
@@ -69,49 +65,74 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, []);
 
-  // Optimized auth state handler
-  const handleAuthStateChange = useCallback(async (event: string, session: Session | null) => {
-    console.log('Auth state changed:', event);
-    setSession(session);
-    
-    if (session?.user && event !== 'TOKEN_REFRESHED') {
-      // Only fetch profile on actual login/signup, not token refresh
-      const profile = await fetchUserProfile(session.user.id);
-      setUser(profile);
-    } else if (!session) {
-      setUser(null);
-    }
-    
-    setIsLoading(false);
-  }, [fetchUserProfile]);
-
   useEffect(() => {
-    // Get initial session first
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        handleAuthStateChange('INITIAL_SESSION', session);
-      } else {
+    let mounted = true;
+
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session: initialSession } } = await supabase.auth.getSession();
+        
+        if (!mounted) return;
+
+        if (initialSession?.user) {
+          const profile = await fetchUserProfile(initialSession.user.id);
+          if (mounted) {
+            setSession(initialSession);
+            setUser(profile);
+          }
+        }
+        
+        if (mounted) {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!mounted) return;
+
+      console.log('Auth state changed:', event);
+      
+      if (session?.user && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+        if (event === 'SIGNED_IN') {
+          // Only fetch profile on actual sign in, not token refresh
+          const profile = await fetchUserProfile(session.user.id);
+          setUser(profile);
+        }
+        setSession(session);
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setSession(null);
+      }
+      
+      // Only set loading to false after initial setup
+      if (event !== 'TOKEN_REFRESHED') {
         setIsLoading(false);
       }
     });
 
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(handleAuthStateChange);
+    initializeAuth();
 
-    return () => subscription.unsubscribe();
-  }, [handleAuthStateChange]);
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [fetchUserProfile]);
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
-    
     try {
       console.log('Attempting login with email:', email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-
-      console.log('Login response:', { data, error });
 
       if (error) {
         console.error('Login error:', error);
@@ -128,10 +149,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       console.log('Login successful');
-      // The auth state change handler will manage the rest
+      // Auth state change handler will manage the rest
     } catch (error: any) {
       console.error('Login error:', error);
-      setIsLoading(false);
       throw error;
     }
   };
