@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Search, MapPin, Edit, Users, Trash2, Home } from "lucide-react";
+import { Plus, Search, MapPin, Edit, Users, Trash2, Home, Check, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface UnitType {
@@ -85,6 +85,8 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isUnitTypesDialogOpen, setIsUnitTypesDialogOpen] = useState(false);
   const [selectedPropertyForUnits, setSelectedPropertyForUnits] = useState<Property | null>(null);
+  const [editingUnitType, setEditingUnitType] = useState<UnitType | null>(null);
+  const [editUnitTypePrice, setEditUnitTypePrice] = useState("");
 
   const filteredProperties = properties.filter(property =>
     property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -198,6 +200,58 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
       title: "Success",
       description: "Unit type deleted successfully",
     });
+  };
+
+  const handleEditUnitTypePrice = (unitType: UnitType) => {
+    setEditingUnitType(unitType);
+    setEditUnitTypePrice(unitType.rentPerUnit.toString());
+  };
+
+  const handleSaveUnitTypePrice = () => {
+    if (!editingUnitType || !selectedPropertyForUnits || !editUnitTypePrice) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid price",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newPrice = parseFloat(editUnitTypePrice);
+    if (isNaN(newPrice) || newPrice <= 0) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid price",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setProperties(properties.map(p => 
+      p.id === selectedPropertyForUnits.id 
+        ? { 
+            ...p, 
+            unitTypes: p.unitTypes.map(ut => 
+              ut.id === editingUnitType.id 
+                ? { ...ut, rentPerUnit: newPrice }
+                : ut
+            )
+          }
+        : p
+    ));
+
+    setEditingUnitType(null);
+    setEditUnitTypePrice("");
+    
+    toast({
+      title: "Success",
+      description: "Unit type price updated successfully",
+    });
+  };
+
+  const handleCancelEditUnitTypePrice = () => {
+    setEditingUnitType(null);
+    setEditUnitTypePrice("");
   };
 
   const getStatusColor = (status: string) => {
@@ -451,7 +505,42 @@ const PropertiesTab = ({ onNavigateToTenants }: PropertiesTabProps) => {
                     <div className="flex-1">
                       <div className="font-medium">{unitType.name}</div>
                       <div className="text-sm text-muted-foreground">
-                        {unitType.count} units • {unitType.occupied} occupied • KES {unitType.rentPerUnit.toLocaleString()}/unit
+                        {unitType.count} units • {unitType.occupied} occupied • 
+                        {editingUnitType?.id === unitType.id ? (
+                          <span className="inline-flex items-center gap-2 ml-1">
+                            KES 
+                            <Input
+                              type="number"
+                              value={editUnitTypePrice}
+                              onChange={(e) => setEditUnitTypePrice(e.target.value)}
+                              className="w-24 h-6 px-1 text-xs"
+                            />
+                            /unit
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              onClick={handleSaveUnitTypePrice}
+                            >
+                              <Check className="h-3 w-3 text-green-600" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 w-6 p-0"
+                              onClick={handleCancelEditUnitTypePrice}
+                            >
+                              <X className="h-3 w-3 text-red-600" />
+                            </Button>
+                          </span>
+                        ) : (
+                          <span 
+                            className="cursor-pointer hover:text-blue-600 ml-1"
+                            onClick={() => handleEditUnitTypePrice(unitType)}
+                          >
+                            KES {unitType.rentPerUnit.toLocaleString()}/unit
+                          </span>
+                        )}
                       </div>
                     </div>
                     <Button
