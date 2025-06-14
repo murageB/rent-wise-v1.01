@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building, Users, DollarSign, Wrench, FileText, Plus } from "lucide-react";
+import { Building, Users, DollarSign, Wrench, FileText, Plus, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/components/auth/AuthProvider";
 import PropertiesTab from "@/components/property-management/PropertiesTab";
 import TenantsTab from "@/components/property-management/TenantsTab";
 import RentTab from "@/components/property-management/RentTab";
@@ -11,6 +12,7 @@ import ReportsTab from "@/components/property-management/ReportsTab";
 import PropertyForm from "@/components/property-management/PropertyForm";
 
 const Index = () => {
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedPropertyFilter, setSelectedPropertyFilter] = useState<string | undefined>();
   const [isAddPropertyDialogOpen, setIsAddPropertyDialogOpen] = useState(false);
@@ -54,9 +56,15 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Property Management Dashboard</h1>
-          <p className="text-muted-foreground">Manage your properties, tenants, and finances all in one place</p>
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Property Management Dashboard</h1>
+            <p className="text-muted-foreground">Welcome, {user?.name} - Manage your properties, tenants, and finances all in one place</p>
+          </div>
+          <Button onClick={logout} variant="outline">
+            <LogOut className="mr-2 h-4 w-4" />
+            Logout
+          </Button>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
