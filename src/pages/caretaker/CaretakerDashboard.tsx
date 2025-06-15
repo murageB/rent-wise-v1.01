@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Wrench, Building, Users, LogOut, CheckCircle } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
+import CaretakerWaterTab from "@/components/water-management/CaretakerWaterTab";
 
 const CaretakerDashboard = () => {
   const { user, logout } = useAuth();
@@ -38,9 +39,10 @@ const CaretakerDashboard = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
+            <TabsTrigger value="water">Water Readings</TabsTrigger>
             <TabsTrigger value="properties">Properties</TabsTrigger>
             <TabsTrigger value="tenants">Tenant Contact</TabsTrigger>
           </TabsList>
@@ -156,6 +158,10 @@ const CaretakerDashboard = () => {
                 <p className="text-muted-foreground">Maintenance management features will be implemented here.</p>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="water">
+            <CaretakerWaterTab />
           </TabsContent>
 
           <TabsContent value="properties">

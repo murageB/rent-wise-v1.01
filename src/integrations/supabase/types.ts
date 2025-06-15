@@ -230,6 +230,165 @@ export type Database = {
           },
         ]
       }
+      water_bills: {
+        Row: {
+          bill_date: string
+          created_at: string
+          due_date: string
+          id: string
+          property_id: string
+          reading_id: string
+          status: string
+          tenant_id: string
+          total_amount: number
+          unit_price: number
+          units_consumed: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bill_date?: string
+          created_at?: string
+          due_date: string
+          id?: string
+          property_id: string
+          reading_id: string
+          status?: string
+          tenant_id: string
+          total_amount: number
+          unit_price: number
+          units_consumed: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bill_date?: string
+          created_at?: string
+          due_date?: string
+          id?: string
+          property_id?: string
+          reading_id?: string
+          status?: string
+          tenant_id?: string
+          total_amount?: number
+          unit_price?: number
+          units_consumed?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "water_bills_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "water_bills_reading_id_fkey"
+            columns: ["reading_id"]
+            isOneToOne: false
+            referencedRelation: "water_readings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "water_bills_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      water_readings: {
+        Row: {
+          created_at: string
+          current_reading: number
+          id: string
+          previous_reading: number
+          property_id: string
+          reading_date: string
+          tenant_id: string
+          units_consumed: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_reading: number
+          id?: string
+          previous_reading?: number
+          property_id: string
+          reading_date?: string
+          tenant_id: string
+          units_consumed?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_reading?: number
+          id?: string
+          previous_reading?: number
+          property_id?: string
+          reading_date?: string
+          tenant_id?: string
+          units_consumed?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "water_readings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "water_readings_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      water_settings: {
+        Row: {
+          created_at: string
+          id: string
+          property_id: string
+          unit_price: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          property_id: string
+          unit_price?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          property_id?: string
+          unit_price?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "water_settings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

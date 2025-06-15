@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Wrench, FileText, Home, LogOut } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
+import TenantWaterTab from "@/components/water-management/TenantWaterTab";
 
 const TenantDashboard = () => {
   const { user, logout } = useAuth();
@@ -42,9 +43,10 @@ const TenantDashboard = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="payments">Payments</TabsTrigger>
+            <TabsTrigger value="water">Water Bills</TabsTrigger>
             <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
           </TabsList>
@@ -165,6 +167,10 @@ const TenantDashboard = () => {
                 <p className="text-muted-foreground">Payment features will be implemented here.</p>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="water">
+            <TenantWaterTab />
           </TabsContent>
 
           <TabsContent value="maintenance">

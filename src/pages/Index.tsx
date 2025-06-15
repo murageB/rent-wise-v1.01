@@ -10,6 +10,7 @@ import TenantsTab from "@/components/property-management/TenantsTab";
 import RentTab from "@/components/property-management/RentTab";
 import ReportsTab from "@/components/property-management/ReportsTab";
 import MaintenanceTab from "@/components/property-management/MaintenanceTab";
+import WaterTab from "@/components/water-management/WaterTab";
 
 const Index = () => {
   const { user, logout } = useAuth();
@@ -44,11 +45,12 @@ const Index = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="properties">Properties</TabsTrigger>
             <TabsTrigger value="tenants">Tenants</TabsTrigger>
             <TabsTrigger value="rent">Rent & Payments</TabsTrigger>
+            <TabsTrigger value="water">Water</TabsTrigger>
             <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
           </TabsList>
@@ -166,6 +168,10 @@ const Index = () => {
 
           <TabsContent value="rent">
             <RentTab />
+          </TabsContent>
+
+          <TabsContent value="water">
+            <WaterTab />
           </TabsContent>
 
           <TabsContent value="maintenance">
