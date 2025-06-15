@@ -12,38 +12,49 @@
 **Landlords:**
 - **Email:** landlord1@example.com | **Password:** password123
   - **Name:** Robert Smith
-  - **Properties:** Sunset Apartments, Downtown Plaza
+  - **Properties:** All 3 properties (Sunset Apartments, Green Valley Complex, Downtown Plaza)
   - **Features to test:** Property management, water pricing settings, tenant management, bill generation
 
-- **Email:** testlandlord@example.com | **Password:** password123  
-  - **Name:** Test Landlord
-  - **Properties:** Green Valley Complex
-  - **Features to test:** Property management, water pricing settings, tenant management
-
 **Caretakers:**
-- **Email:** testcaretaker@example.com | **Password:** password123
-  - **Name:** Test Caretaker
+- **Email:** caretaker1@example.com | **Password:** password123  
+  - **Name:** Alice Johnson
+  - **Manages:** Sunset Apartments, Green Valley Complex (2 properties)
+  - **Features to test:** Water meter readings, maintenance requests, tenant communication
+
+- **Email:** caretaker2@example.com | **Password:** password123
+  - **Name:** Bob Williams
+  - **Manages:** Downtown Plaza (1 property)
   - **Features to test:** Water meter readings, maintenance requests, tenant communication
 
 **Tenants:**
-- **Email:** testtenant@example.com | **Password:** password123
+- **Email:** tenant1@example.com | **Password:** password123
   - **Name:** John Doe
   - **Property:** Sunset Apartments
   - **Features to test:** View water bills, payment history, maintenance requests
 
-- **Email:** testtenant@gmail.com | **Password:** password123
+- **Email:** tenant2@example.com | **Password:** password123
   - **Name:** Jane Smith  
   - **Property:** Sunset Apartments
   - **Features to test:** View water bills, payment history
 
-- **Email:** testlandlady@gmail.com | **Password:** password123
-  - **Name:** Mike Johnson (tenant role)
+- **Email:** tenant3@example.com | **Password:** password123
+  - **Name:** Mike Johnson
   - **Property:** Green Valley Complex
   - **Features to test:** Tenant dashboard, water bill viewing
 
-- **Email:** testcaretaker@gmail.com | **Password:** password123
-  - **Name:** Sarah Wilson (tenant role)
+- **Email:** tenant4@example.com | **Password:** password123
+  - **Name:** Sarah Wilson
   - **Property:** Green Valley Complex
+  - **Features to test:** Tenant dashboard, water bill viewing
+
+- **Email:** tenant5@example.com | **Password:** password123
+  - **Name:** David Brown
+  - **Property:** Downtown Plaza
+  - **Features to test:** Tenant dashboard, water bill viewing
+
+- **Email:** tenant6@example.com | **Password:** password123
+  - **Name:** Lisa Chen (inactive tenant)
+  - **Property:** Downtown Plaza
   - **Features to test:** Tenant dashboard, water bill viewing
 
 ### Test Dataset Overview
@@ -52,17 +63,25 @@
 1. **Sunset Apartments** - 123 Sunset Boulevard, Nairobi
    - Type: Apartment | Rent: KES 25,000 | Status: Occupied
    - Water Rate: KES 15.00 per unit
-   - Tenants: John Doe, Jane Smith
+   - Tenants: John Doe (tenant1@example.com), Jane Smith (tenant2@example.com)
+   - Managed by: Alice Johnson (caretaker1@example.com)
 
 2. **Green Valley Complex** - 456 Valley Road, Nairobi  
    - Type: Apartment | Rent: KES 30,000 | Status: Occupied
    - Water Rate: KES 12.00 per unit
-   - Tenants: Mike Johnson, Sarah Wilson
+   - Tenants: Mike Johnson (tenant3@example.com), Sarah Wilson (tenant4@example.com)
+   - Managed by: Alice Johnson (caretaker1@example.com)
 
 3. **Downtown Plaza** - 789 City Center, Nairobi
    - Type: Commercial | Rent: KES 45,000 | Status: Partially Occupied
    - Water Rate: KES 18.00 per unit
-   - Tenants: David Brown (active), Lisa Chen (inactive)
+   - Tenants: David Brown (tenant5@example.com) - active, Lisa Chen (tenant6@example.com) - inactive
+   - Managed by: Bob Williams (caretaker2@example.com)
+
+**Management Structure:**
+- **1 Landlord** (Robert Smith) owns all 3 properties
+- **2 Caretakers:** Alice manages 2 properties, Bob manages 1 property
+- **6 Tenants** distributed evenly across the 3 properties (2 per property)
 
 **Test Data Includes:**
 - **6 Tenant records** with realistic lease information
@@ -75,7 +94,7 @@
 ### Testing Scenarios by Role
 
 #### 🏠 **Landlord Testing** 
-Login as: `testlandlord@example.com` or `landlord1@example.com`
+Login as: `landlord1@example.com`
 
 **Water Management:**
 - Set water pricing per property (Settings tab)
@@ -90,7 +109,7 @@ Login as: `testlandlord@example.com` or `landlord1@example.com`
 - Handle maintenance requests
 
 #### 🔧 **Caretaker Testing**
-Login as: `testcaretaker@example.com`
+Login as: `caretaker1@example.com` or `caretaker2@example.com`
 
 **Water Readings:**
 - Record new meter readings for tenants
@@ -104,7 +123,7 @@ Login as: `testcaretaker@example.com`
 - Communicate with tenants and landlords
 
 #### 🏡 **Tenant Testing**
-Login as any tenant account (e.g., `testtenant@example.com`)
+Login as any tenant account (e.g., `tenant1@example.com`)
 
 **Water Bills:**
 - View current and historical water bills
@@ -121,9 +140,9 @@ Login as any tenant account (e.g., `testtenant@example.com`)
 
 #### 🚰 **Water Management Workflow:**
 1. **Landlord** sets water pricing (KES 15/unit for Sunset Apartments)
-2. **Caretaker** records monthly meter reading (e.g., 180 units for John Doe)
+2. **Caretaker1** records monthly meter reading (e.g., 180 units for John Doe)
 3. **System** automatically generates bill (180 × KES 15 = KES 2,700)
-4. **Tenant** logs in to view new water bill and payment status
+4. **Tenant1** logs in to view new water bill and payment status
 
 #### 🔧 **Maintenance Workflow:**
 1. **Tenant** submits maintenance request (e.g., "Leaky faucet")
