@@ -1,229 +1,196 @@
+# RentWise v1.01 - Blockchain-Powered Property Management
 
-# Welcome to your Lovable project
+A comprehensive property management system built with Ruby on Rails and integrated with Quorum blockchain for secure, transparent data management and privacy-enhanced operations.
 
-## Project info
+## 🚀 Features
 
-**URL**: https://lovable.dev/projects/be8c6d49-03f9-44d6-b89a-52ae60417dfc
+### Core Property Management
+- **User Authentication** - Devise-based authentication with role-based access
+- **Property Management** - Complete CRUD operations for properties
+- **Tenant Management** - Tenant registration, profiles, and lease management
+- **Water Billing System** - Automated water meter readings and billing
+- **Maintenance Requests** - Track and manage property maintenance
 
-## 🧪 Test Credentials & Dataset
+### Blockchain Integration
+- **Quorum Private Blockchain** - IBFT 2.0 consensus with Tessera privacy
+- **Smart Contracts** - Solidity contracts for property registry
+- **Encrypted Data Storage** - Privacy-enhanced data management
+- **Blockchain Service** - HTTP-based interaction with Quorum RPC
+- **Property Registry Contract** - On-chain property ownership verification
 
-### Test User Accounts
+### Technology Stack
+- **Backend**: Ruby on Rails 7.1.5.1
+- **Database**: PostgreSQL with Supabase
+- **Authentication**: Devise
+- **Blockchain**: Quorum (Hyperledger Besu) with IBFT 2.0
+- **Privacy**: Tessera for private transactions
+- **Frontend**: React with TypeScript (separate app)
 
-**Landlords:**
-- **Email:** landlord1@example.com | **Password:** password123
-  - **Name:** Robert Smith
-  - **Properties:** All 3 properties (Sunset Apartments, Green Valley Complex, Downtown Plaza)
-  - **Features to test:** Property management, water pricing settings, tenant management, bill generation
+## 📁 Project Structure
 
-**Caretakers:**
-- **Email:** caretaker1@example.com | **Password:** password123  
-  - **Name:** Alice Johnson
-  - **Manages:** Sunset Apartments, Green Valley Complex (2 properties)
-  - **Features to test:** Water meter readings, maintenance requests, tenant communication
-
-- **Email:** caretaker2@example.com | **Password:** password123
-  - **Name:** Bob Williams
-  - **Manages:** Downtown Plaza (1 property)
-  - **Features to test:** Water meter readings, maintenance requests, tenant communication
-
-**Tenants:**
-- **Email:** tenant1@example.com | **Password:** password123
-  - **Name:** John Doe
-  - **Property:** Sunset Apartments
-  - **Features to test:** View water bills, payment history, maintenance requests
-
-- **Email:** tenant2@example.com | **Password:** password123
-  - **Name:** Jane Smith  
-  - **Property:** Sunset Apartments
-  - **Features to test:** View water bills, payment history
-
-- **Email:** tenant3@example.com | **Password:** password123
-  - **Name:** Mike Johnson
-  - **Property:** Green Valley Complex
-  - **Features to test:** Tenant dashboard, water bill viewing
-
-- **Email:** tenant4@example.com | **Password:** password123
-  - **Name:** Sarah Wilson
-  - **Property:** Green Valley Complex
-  - **Features to test:** Tenant dashboard, water bill viewing
-
-- **Email:** tenant5@example.com | **Password:** password123
-  - **Name:** David Brown
-  - **Property:** Downtown Plaza
-  - **Features to test:** Tenant dashboard, water bill viewing
-
-- **Email:** tenant6@example.com | **Password:** password123
-  - **Name:** Lisa Chen (inactive tenant)
-  - **Property:** Downtown Plaza
-  - **Features to test:** Tenant dashboard, water bill viewing
-
-### Test Dataset Overview
-
-**Properties (3 total):**
-1. **Sunset Apartments** - 123 Sunset Boulevard, Nairobi
-   - Type: Apartment | Rent: KES 25,000 | Status: Occupied
-   - Water Rate: KES 15.00 per unit
-   - Tenants: John Doe (tenant1@example.com), Jane Smith (tenant2@example.com)
-   - Managed by: Alice Johnson (caretaker1@example.com)
-
-2. **Green Valley Complex** - 456 Valley Road, Nairobi  
-   - Type: Apartment | Rent: KES 30,000 | Status: Occupied
-   - Water Rate: KES 12.00 per unit
-   - Tenants: Mike Johnson (tenant3@example.com), Sarah Wilson (tenant4@example.com)
-   - Managed by: Alice Johnson (caretaker1@example.com)
-
-3. **Downtown Plaza** - 789 City Center, Nairobi
-   - Type: Commercial | Rent: KES 45,000 | Status: Partially Occupied
-   - Water Rate: KES 18.00 per unit
-   - Tenants: David Brown (tenant5@example.com) - active, Lisa Chen (tenant6@example.com) - inactive
-   - Managed by: Bob Williams (caretaker2@example.com)
-
-**Management Structure:**
-- **1 Landlord** (Robert Smith) owns all 3 properties
-- **2 Caretakers:** Alice manages 2 properties, Bob manages 1 property
-- **6 Tenants** distributed evenly across the 3 properties (2 per property)
-
-**Test Data Includes:**
-- **6 Tenant records** with realistic lease information
-- **3 months of water readings** (March-May 2024)
-- **15 water bills** with various payment statuses (paid, pending, overdue)
-- **5 rent payment records** for May 2024
-- **5 maintenance requests** with different priorities and statuses
-- **Water pricing settings** for each property
-
-### Testing Scenarios by Role
-
-#### 🏠 **Landlord Testing** 
-Login as: `landlord1@example.com`
-
-**Water Management:**
-- Set water pricing per property (Settings tab)
-- View generated water bills (Bills & Invoices tab)
-- Generate reports on water consumption (Reports tab)
-- Manage tenant water accounts
-
-**Property Management:**
-- View property dashboard and statistics
-- Manage tenant information and leases
-- Track rent payments and generate receipts
-- Handle maintenance requests
-
-#### 🔧 **Caretaker Testing**
-Login as: `caretaker1@example.com` or `caretaker2@example.com`
-
-**Water Readings:**
-- Record new meter readings for tenants
-- View historical reading data
-- Filter readings by property
-- Automatic bill generation upon reading entry
-
-**Maintenance:**
-- View and manage maintenance requests
-- Update request status and priority
-- Communicate with tenants and landlords
-
-#### 🏡 **Tenant Testing**
-Login as any tenant account (e.g., `tenant1@example.com`)
-
-**Water Bills:**
-- View current and historical water bills
-- Check payment status and due dates
-- Track water consumption patterns
-- View bill details and rates
-
-**General Features:**
-- Update profile information
-- Submit maintenance requests
-- View lease and property information
-
-### Sample Test Workflows
-
-#### 🚰 **Water Management Workflow:**
-1. **Landlord** sets water pricing (KES 15/unit for Sunset Apartments)
-2. **Caretaker1** records monthly meter reading (e.g., 180 units for John Doe)
-3. **System** automatically generates bill (180 × KES 15 = KES 2,700)
-4. **Tenant1** logs in to view new water bill and payment status
-
-#### 🔧 **Maintenance Workflow:**
-1. **Tenant** submits maintenance request (e.g., "Leaky faucet")
-2. **Landlord** reviews request and assigns to caretaker
-3. **Caretaker** updates status and completes work
-4. **System** tracks request lifecycle and notifications
-
-### Bill Status Examples in Test Data:
-- **Paid Bills:** March water bills for most tenants
-- **Pending Bills:** Recent May 2024 bills awaiting payment
-- **Overdue Bills:** Some April bills for Downtown Plaza tenants
-
-### Water Consumption Patterns:
-- **Residential units:** 25-35 units per month average
-- **Commercial units:** 40-45 units per month average
-- **Seasonal variation:** Slightly higher consumption in recent months
-
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/be8c6d49-03f9-44d6-b89a-52ae60417dfc) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+rent-wise-app/
+├── v1.01/rent_wise/          # Rails application
+│   ├── app/
+│   │   ├── controllers/      # Rails controllers
+│   │   ├── models/          # ActiveRecord models
+│   │   ├── views/           # ERB templates
+│   │   └── services/        # Blockchain service
+│   ├── contracts/           # Solidity smart contracts
+│   ├── medium/              # Documentation articles
+│   └── config/              # Rails configuration
+├── src/                     # React frontend (separate app)
+└── quorum-dev-quickstart/   # Blockchain network setup
 ```
 
-**Edit a file directly in GitHub**
+## 🛠️ Installation & Setup
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Prerequisites
+- Ruby 3.0.2+
+- Rails 7.1.5.1
+- PostgreSQL
+- Node.js (for React frontend)
+- Docker (for Quorum blockchain)
 
-**Use GitHub Codespaces**
+### Rails Application Setup
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. **Navigate to Rails app directory:**
+   ```bash
+   cd v1.01/rent_wise
+   ```
 
-## What technologies are used for this project?
+2. **Install dependencies:**
+   ```bash
+   bundle install
+   ```
 
-This project is built with:
+3. **Setup database:**
+   ```bash
+   rails db:create
+   rails db:migrate
+   rails db:seed
+   ```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+4. **Start Rails server:**
+   ```bash
+   rails server -p 3001
+   ```
 
-## How can I deploy this project?
+### Blockchain Network Setup
 
-Simply open [Lovable](https://lovable.dev/projects/be8c6d49-03f9-44d6-b89a-52ae60417dfc) and click on Share -> Publish.
+1. **Navigate to Quorum directory:**
+   ```bash
+   cd quorum-dev-quickstart
+   ```
 
-## Can I connect a custom domain to my Lovable project?
+2. **Start the network:**
+   ```bash
+   npm install
+   npm run network:start
+   ```
 
-Yes, you can!
+3. **Verify network health:**
+   ```bash
+   npm run network:status
+   ```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### React Frontend Setup
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. **Navigate to React app:**
+   ```bash
+   cd src
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server:**
+   ```bash
+   npm start
+   ```
+
+## 🔗 API Endpoints
+
+### Authentication
+- `POST /users/sign_up` - User registration
+- `POST /users/sign_in` - User login
+- `DELETE /users/sign_out` - User logout
+
+### Properties
+- `GET /properties` - List all properties
+- `POST /properties` - Create new property
+- `GET /properties/:id` - Get property details
+- `PUT /properties/:id` - Update property
+- `DELETE /properties/:id` - Delete property
+
+### Blockchain
+- `GET /blockchain/status` - Blockchain network status
+- `POST /blockchain/contracts/deploy` - Deploy smart contract
+- `POST /blockchain/transactions` - Submit transaction
+
+## 📚 Documentation
+
+### Medium Articles
+The `medium/` directory contains comprehensive documentation:
+
+1. **From React to Rails: The Great Migration** - Migration journey and technical decisions
+2. **Blockchain Integration: Quorum Revolution** - Blockchain setup and integration
+3. **Production Deployment & Scaling Success** - Deployment strategies and optimization
+4. **Future Vision: AI & DeFi Integration** - Roadmap and future enhancements
+
+### Technical Documentation
+- `BLOCKCHAIN_INTEGRATION_STATUS.md` - Current blockchain integration status
+- `DEVELOPMENT_SUMMARY.md` - Development progress and milestones
+
+## 🔐 Security Features
+
+- **Devise Authentication** - Secure user authentication
+- **Private Blockchain** - Data privacy through Quorum
+- **Encrypted Storage** - Sensitive data encryption
+- **Role-based Access** - User permission management
+
+## 🚀 Deployment
+
+### Production Setup
+1. Configure environment variables
+2. Setup PostgreSQL database
+3. Deploy Quorum network
+4. Configure web server (Nginx/Apache)
+5. Setup SSL certificates
+
+### Environment Variables
+```bash
+DATABASE_URL=postgresql://user:password@localhost/rentwise_production
+QUORUM_RPC_URL=http://localhost:8545
+QUORUM_PRIVATE_KEY=your_private_key
+RAILS_MASTER_KEY=your_master_key
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## 📄 License
+
+**Copyright © 2024 Desire AI - Property of MurageB**
+
+All rights reserved. This software and associated documentation files (the "Software") are the exclusive property of Desire AI, owned by MurageB. 
+
+The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
+
+## 📞 Support
+
+For support and inquiries:
+- **Developer**: MurageB
+- **Organization**: Desire AI
+- **Repository**: https://github.com/murageB/rent-wise-v1.01
+
+---
+
+**Built with ❤️ by Desire AI - Property of MurageB**
