@@ -1,79 +1,197 @@
-# RentWise Medium Articles
+# RentWise v1.01 - Blockchain-Powered Property Management
 
-This directory contains a series of Medium-style articles documenting the journey of building RentWise, a blockchain-powered property management platform.
+A comprehensive property management system built with Ruby on Rails and integrated with Quorum blockchain for secure, transparent data management and privacy-enhanced operations.
 
-## Article Series
+## 🚀 Features
 
-### 1. [From React to Rails: The Great Migration](./01-from-react-to-rails-the-great-migration.md)
-*The story of migrating from a React/TypeScript frontend to a full-stack Ruby on Rails application, complete with user authentication, property management, and the foundation for blockchain integration.*
+### Core Property Management
+- **User Authentication** - Devise-based authentication with role-based access
+- **Property Management** - Complete CRUD operations for properties
+- **Tenant Management** - Tenant registration, profiles, and lease management
+- **Water Billing System** - Automated water meter readings and billing
+- **Maintenance Requests** - Track and manage property maintenance
 
-**Key Topics:**
-- Migration strategy and planning
-- Rails application setup and configuration
-- Devise authentication integration
-- Property management models and controllers
-- Database design and migrations
+### Blockchain Integration
+- **Quorum Private Blockchain** - IBFT 2.0 consensus with Tessera privacy
+- **Smart Contracts** - Solidity contracts for property registry
+- **Encrypted Data Storage** - Privacy-enhanced data management
+- **Blockchain Service** - HTTP-based interaction with Quorum RPC
+- **Property Registry Contract** - On-chain property ownership verification
 
-### 2. [Blockchain Integration: The Quorum Revolution](./02-blockchain-integration-quorum-revolution.md)
-*How we transformed a traditional Rails app into a blockchain-powered property management platform using Quorum, Tessera, and smart contracts.*
+### Technology Stack
+- **Backend**: Ruby on Rails 7.1.5.1
+- **Database**: PostgreSQL with Supabase
+- **Authentication**: Devise
+- **Blockchain**: Quorum (Hyperledger Besu) with IBFT 2.0
+- **Privacy**: Tessera for private transactions
+- **Frontend**: React with TypeScript (separate app)
 
-**Key Topics:**
-- Quorum blockchain network setup
-- Privacy with Tessera encryption
-- Smart contract development
-- Rails-blockchain integration
-- Real-world impact and use cases
+## 📁 Project Structure
 
-### 3. [Production Deployment: From Development to Scale](./03-production-deployment-scaling-success.md)
-*The epic journey of taking our Rails + Quorum application from a local development environment to a production-ready, scalable platform.*
+```
+rent-wise-app/
+├── v1.01/rent_wise/          # Rails application
+│   ├── app/
+│   │   ├── controllers/      # Rails controllers
+│   │   ├── models/          # ActiveRecord models
+│   │   ├── views/           # ERB templates
+│   │   └── services/        # Blockchain service
+│   ├── contracts/           # Solidity smart contracts
+│   ├── medium/              # Documentation articles
+│   └── config/              # Rails configuration
+├── src/                     # React frontend (separate app)
+└── quorum-dev-quickstart/   # Blockchain network setup
+```
 
-**Key Topics:**
-- Infrastructure evolution and containerization
-- Database scaling strategies
-- Blockchain infrastructure scaling
-- Performance optimization
-- Monitoring and security
+## 🛠️ Installation & Setup
 
-### 4. [The Future Vision: AI, DeFi, and Beyond](./04-future-vision-ai-defi-beyond.md)
-*Exploring the cutting-edge technologies that will transform our blockchain-powered property platform into the future of real estate.*
+### Prerequisites
+- Ruby 3.0.2+
+- Rails 7.1.5.1
+- PostgreSQL
+- Node.js (for React frontend)
+- Docker (for Quorum blockchain)
 
-**Key Topics:**
-- AI-powered property management
-- DeFi integration and tokenization
-- Cross-chain interoperability
-- IoT integration
-- Future roadmap and impact
+### Rails Application Setup
 
-## Reading Order
+1. **Navigate to Rails app directory:**
+   ```bash
+   cd v1.01/rent_wise
+   ```
 
-We recommend reading the articles in order to follow the complete journey:
+2. **Install dependencies:**
+   ```bash
+   bundle install
+   ```
 
-1. **Start with the Migration** - Understand why we moved from React to Rails
-2. **Learn about Blockchain** - See how we integrated Quorum
-3. **Scale to Production** - Discover how we made it production-ready
-4. **Explore the Future** - See where we're heading with AI and DeFi
+3. **Setup database:**
+   ```bash
+   rails db:create
+   rails db:migrate
+   rails db:seed
+   ```
 
-## Technical Stack Covered
+4. **Start Rails server:**
+   ```bash
+   rails server -p 3001
+   ```
 
-- **Frontend:** React, TypeScript, Tailwind CSS
-- **Backend:** Ruby on Rails 7.1, PostgreSQL
-- **Authentication:** Devise
-- **Blockchain:** Quorum, Tessera, Solidity
-- **Infrastructure:** Docker, Kubernetes, Grafana
-- **Future:** AI/ML, DeFi, IoT, Cross-chain
+### Blockchain Network Setup
 
-## Target Audience
+1. **Navigate to Quorum directory:**
+   ```bash
+   cd quorum-dev-quickstart
+   ```
 
-These articles are written for:
-- **Developers** interested in blockchain integration
-- **Product Managers** exploring blockchain use cases
-- **Technical Leaders** planning similar migrations
-- **Anyone curious** about the future of property management
+2. **Start the network:**
+   ```bash
+   npm install
+   npm run network:start
+   ```
 
-## Contributing
+3. **Verify network health:**
+   ```bash
+   npm run network:status
+   ```
 
-Feel free to use these articles as reference material for your own projects. If you find any technical inaccuracies or have suggestions for improvements, please let us know!
+### React Frontend Setup
+
+1. **Navigate to React app:**
+   ```bash
+   cd src
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start development server:**
+   ```bash
+   npm start
+   ```
+
+## 🔗 API Endpoints
+
+### Authentication
+- `POST /users/sign_up` - User registration
+- `POST /users/sign_in` - User login
+- `DELETE /users/sign_out` - User logout
+
+### Properties
+- `GET /properties` - List all properties
+- `POST /properties` - Create new property
+- `GET /properties/:id` - Get property details
+- `PUT /properties/:id` - Update property
+- `DELETE /properties/:id` - Delete property
+
+### Blockchain
+- `GET /blockchain/status` - Blockchain network status
+- `POST /blockchain/contracts/deploy` - Deploy smart contract
+- `POST /blockchain/transactions` - Submit transaction
+
+## 📚 Documentation
+
+### Medium Articles
+The `medium/` directory contains comprehensive documentation:
+
+1. **From React to Rails: The Great Migration** - Migration journey and technical decisions
+2. **Blockchain Integration: Quorum Revolution** - Blockchain setup and integration
+3. **Production Deployment & Scaling Success** - Deployment strategies and optimization
+4. **Future Vision: AI & DeFi Integration** - Roadmap and future enhancements
+
+### Technical Documentation
+- `BLOCKCHAIN_INTEGRATION_STATUS.md` - Current blockchain integration status
+- `DEVELOPMENT_SUMMARY.md` - Development progress and milestones
+
+## 🔐 Security Features
+
+- **Devise Authentication** - Secure user authentication
+- **Private Blockchain** - Data privacy through Quorum
+- **Encrypted Storage** - Sensitive data encryption
+- **Role-based Access** - User permission management
+
+## 🚀 Deployment
+
+### Production Setup
+1. Configure environment variables
+2. Setup PostgreSQL database
+3. Deploy Quorum network
+4. Configure web server (Nginx/Apache)
+5. Setup SSL certificates
+
+### Environment Variables
+```bash
+DATABASE_URL=postgresql://user:password@localhost/rentwise_production
+QUORUM_RPC_URL=http://localhost:8545
+QUORUM_PRIVATE_KEY=your_private_key
+RAILS_MASTER_KEY=your_master_key
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## 📄 License
+
+**Copyright © 2024 Desire AI - Property of MurageB**
+
+All rights reserved. This software and associated documentation files (the "Software") are the exclusive property of Desire AI, owned by MurageB. 
+
+The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
+
+## 📞 Support
+
+For support and inquiries:
+- **Developer**: MurageB
+- **Organization**: Desire AI
+- **Repository**: https://github.com/murageB/rent-wise-v1.01
 
 ---
 
-*Ready to revolutionize property management? Start reading and join the blockchain revolution! 🚀* 
+**Built with ❤️ by Desire AI - Property of MurageB**
+
