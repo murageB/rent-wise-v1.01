@@ -1,0 +1,85 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Blockchain Network Status</h1>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Network Status -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-semibold mb-4">Network Status</h2>
+      
+      <% if @network_status[:connected] %>
+        <div class="space-y-3">
+          <div class="flex justify-between">
+            <span class="font-medium">Connection:</span>
+            <span class="text-green-600 font-semibold">Connected</span>
+          </div>
+          
+          <div class="flex justify-between">
+            <span class="font-medium">Syncing:</span>
+            <span class="<%= @network_status[:syncing] ? 'text-yellow-600' : 'text-green-600' %> font-semibold">
+              <%= @network_status[:syncing] ? 'Syncing' : 'Synced' %>
+            </span>
+          </div>
+          
+          <div class="flex justify-between">
+            <span class="font-medium">Latest Block:</span>
+            <span class="font-mono"><%= @latest_block %></span>
+          </div>
+          
+          <div class="flex justify-between">
+            <span class="font-medium">Last Updated:</span>
+            <span><%= @network_status[:timestamp]&.strftime('%Y-%m-%d %H:%M:%S') %></span>
+          </div>
+        </div>
+      <% else %>
+        <div class="text-red-600">
+          <p class="font-semibold">Connection Failed</p>
+          <p class="text-sm mt-1"><%= @network_status[:error] %></p>
+        </div>
+      <% end %>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+      
+      <div class="space-y-3">
+        <a href="<%= blockchain_latest_blocks_path %>" 
+           class="block w-full bg-blue-600 text-white text-center py-2 px-4 rounded hover:bg-blue-700 transition-colors">
+          View Latest Blocks
+        </a>
+        
+        <a href="<%= properties_path %>" 
+           class="block w-full bg-green-600 text-white text-center py-2 px-4 rounded hover:bg-green-700 transition-colors">
+          Manage Properties
+        </a>
+        
+        <a href="<%= root_path %>" 
+           class="block w-full bg-gray-600 text-white text-center py-2 px-4 rounded hover:bg-gray-700 transition-colors">
+          Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Blockchain Info -->
+  <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold mb-4">Blockchain Integration Features</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="text-center p-4 border rounded">
+        <h3 class="font-semibold text-lg mb-2">Property Records</h3>
+        <p class="text-gray-600">Immutable property data storage on blockchain</p>
+      </div>
+      
+      <div class="text-center p-4 border rounded">
+        <h3 class="font-semibold text-lg mb-2">Data Integrity</h3>
+        <p class="text-gray-600">Verify data hasn't been tampered with</p>
+      </div>
+      
+      <div class="text-center p-4 border rounded">
+        <h3 class="font-semibold text-lg mb-2">Audit Trail</h3>
+        <p class="text-gray-600">Complete transaction history and logs</p>
+      </div>
+    </div>
+  </div>
+</div> 
