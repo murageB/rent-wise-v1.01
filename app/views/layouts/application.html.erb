@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RentWise</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  </head>
+
+  <body>
+    <div style="text-align:right; margin: 1rem;">
+      <% if user_signed_in? %>
+        Signed in as <strong><%= current_user.email %></strong> |
+        <%= link_to 'Edit profile', edit_user_registration_path %> |
+        <%= link_to 'Log out', destroy_user_session_path, method: :delete %>
+      <% else %>
+        <%= link_to 'Sign up', new_user_registration_path %> |
+        <%= link_to 'Log in', new_user_session_path %>
+      <% end %>
+    </div>
+    
+    <!-- Navigation -->
+    <nav style="background-color: #f8f9fa; padding: 1rem; margin-bottom: 2rem;">
+      <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <%= link_to 'RentWise', root_path, style: 'font-size: 1.5rem; font-weight: bold; text-decoration: none; color: #333;' %>
+        </div>
+        
+        <% if user_signed_in? %>
+          <div style="display: flex; gap: 1rem;">
+            <%= link_to 'Properties', properties_path, style: 'text-decoration: none; color: #007bff;' %>
+            <%= link_to 'Blockchain Status', blockchain_status_path, style: 'text-decoration: none; color: #007bff;' %>
+            <%= link_to 'Latest Blocks', blockchain_latest_blocks_path, style: 'text-decoration: none; color: #007bff;' %>
+          </div>
+        <% end %>
+      </div>
+    </nav>
+    
+    <%= yield %>
+  </body>
+</html>
