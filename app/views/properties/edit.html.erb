@@ -1,6 +1,22 @@
-<h1>Editing property</h1>
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="<%= properties_path %>">Properties</a></li>
+          <li class="breadcrumb-item"><a href="<%= property_path(@property) %>"><%= @property.name %></a></li>
+          <li class="breadcrumb-item active" aria-current="page">Edit</li>
+        </ol>
+      </nav>
+      <h1 class="mb-0">
+        <i class="fas fa-edit me-2"></i>Edit Property
+      </h1>
+      <p class="text-muted">Update the property information and settings.</p>
+    </div>
+  </div>
 
-<%= render "form", property: @property %>
+  <%= render "form", property: @property %>
+</div>
 
 <br>
 

@@ -1,37 +1,202 @@
-<%= form_with(model: property) do |form| %>
+<%= form_with(model: property, class: "needs-validation", local: true) do |form| %>
   <% if property.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(property.errors.count, "error") %> prohibited this property from being saved:</h2>
-
-      <ul>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <h5 class="alert-heading">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <%= pluralize(property.errors.count, "error") %> prohibited this property from being saved:
+      </h5>
+      <ul class="mb-0">
         <% property.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
       </ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
+  <div class="row">
+    <!-- Basic Information -->
+    <div class="col-12 col-lg-8">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-info-circle me-2"></i>Basic Information
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="form-floating">
+                <%= form.text_field :name, class: "form-control #{'is-invalid' if property.errors[:name].any?}", 
+                                   placeholder: "Enter property name", required: true %>
+                <%= form.label :name, "Property Name" %>
+                <% if property.errors[:name].any? %>
+                  <div class="invalid-feedback">
+                    <%= property.errors[:name].join(", ") %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
 
-  <div>
-    <%= form.label :address, style: "display: block" %>
-    <%= form.text_field :address %>
-  </div>
+            <div class="col-12">
+              <div class="form-floating">
+                <%= form.text_area :address, class: "form-control #{'is-invalid' if property.errors[:address].any?}", 
+                                  placeholder: "Enter full address", rows: 3, required: true %>
+                <%= form.label :address, "Full Address" %>
+                <% if property.errors[:address].any? %>
+                  <div class="invalid-feedback">
+                    <%= property.errors[:address].join(", ") %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
 
-  <div>
-    <%= form.label :property_type, style: "display: block" %>
-    <%= form.text_field :property_type %>
-  </div>
+            <div class="col-12 col-md-6">
+              <div class="form-floating">
+                <%= form.select :property_type, 
+                               options_for_select([
+                                 ['Select Property Type', ''],
+                                 ['Apartment Building', 'Apartment'],
+                                 ['Single Family House', 'House'],
+                                 ['Commercial Building', 'Commercial'],
+                                 ['Office Building', 'Office'],
+                                 ['Townhouse', 'Townhouse'],
+                                 ['Condo', 'Condo'],
+                                 ['Mixed Use', 'Mixed Use']
+                               ], property.property_type), 
+                               {}, 
+                               { class: "form-select #{'is-invalid' if property.errors[:property_type].any?}", required: true } %>
+                <%= form.label :property_type, "Property Type" %>
+                <% if property.errors[:property_type].any? %>
+                  <div class="invalid-feedback">
+                    <%= property.errors[:property_type].join(", ") %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
 
-  <div>
-    <%= form.label :status, style: "display: block" %>
-    <%= form.text_field :status %>
-  </div>
+            <div class="col-12 col-md-6">
+              <div class="form-floating">
+                <%= form.select :status, 
+                               options_for_select([
+                                 ['Select Status', ''],
+                                 ['Active', 'Active'],
+                                 ['Inactive', 'Inactive'],
+                                 ['Maintenance', 'Maintenance'],
+                                 ['Under Construction', 'Under Construction']
+                               ], property.status), 
+                               {}, 
+                               { class: "form-select #{'is-invalid' if property.errors[:status].any?}", required: true } %>
+                <%= form.label :status, "Status" %>
+                <% if property.errors[:status].any? %>
+                  <div class="invalid-feedback">
+                    <%= property.errors[:status].join(", ") %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
 
-  <div>
-    <%= form.submit %>
+            <div class="col-12 col-md-6">
+              <div class="form-floating">
+                <%= form.number_field :total_units, class: "form-control #{'is-invalid' if property.errors[:total_units].any?}", 
+                                     placeholder: "0", min: 0 %>
+                <%= form.label :total_units, "Total Units (Optional)" %>
+                <% if property.errors[:total_units].any? %>
+                  <div class="invalid-feedback">
+                    <%= property.errors[:total_units].join(", ") %>
+                  </div>
+                <% end %>
+                <div class="form-text">Leave blank if you'll add units individually</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Property Preview -->
+    <div class="col-12 col-lg-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-eye me-2"></i>Property Preview
+          </h5>
+        </div>
+        <div class="card-body">
+          <div id="propertyPreview">
+            <div class="text-center text-muted">
+              <i class="fas fa-building fa-3x mb-3"></i>
+              <p>Property details will appear here as you fill out the form.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="card">
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <%= form.submit class: "btn btn-primary btn-lg" do %>
+              <i class="fas fa-save me-2"></i>
+              <%= property.new_record? ? 'Create Property' : 'Update Property' %>
+            <% end %>
+            
+            <%= link_to properties_path, class: "btn btn-outline-secondary" do %>
+              <i class="fas fa-arrow-left me-2"></i>Cancel
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 <% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const nameInput = document.getElementById('property_name');
+  const addressInput = document.getElementById('property_address');
+  const typeSelect = document.getElementById('property_property_type');
+  const statusSelect = document.getElementById('property_status');
+  const previewDiv = document.getElementById('propertyPreview');
+
+  function updatePreview() {
+    const name = nameInput.value || 'Property Name';
+    const address = addressInput.value || 'Address';
+    const type = typeSelect.options[typeSelect.selectedIndex]?.text || 'Property Type';
+    const status = statusSelect.options[statusSelect.selectedIndex]?.text || 'Status';
+
+    const statusClass = status === 'Active' ? 'bg-success' : 
+                       status === 'Inactive' ? 'bg-secondary' : 
+                       status === 'Maintenance' ? 'bg-warning' : 'bg-secondary';
+
+    previewDiv.innerHTML = `
+      <div class="card border-0 bg-light">
+        <div class="card-header bg-primary text-white">
+          <h6 class="mb-0">
+            <i class="fas fa-building me-2"></i>${name}
+          </h6>
+        </div>
+        <div class="card-body">
+          <p class="mb-2">
+            <i class="fas fa-map-marker-alt me-2 text-muted"></i>
+            <small>${address}</small>
+          </p>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="badge bg-info">${type}</span>
+            <span class="badge ${statusClass}">${status}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Update preview on input changes
+  nameInput.addEventListener('input', updatePreview);
+  addressInput.addEventListener('input', updatePreview);
+  typeSelect.addEventListener('change', updatePreview);
+  statusSelect.addEventListener('change', updatePreview);
+
+  // Initial preview
+  updatePreview();
+});
+</script>
