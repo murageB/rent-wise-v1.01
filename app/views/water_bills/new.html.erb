@@ -1,0 +1,68 @@
+<h1>New Water Bill</h1>
+
+<%= form_with(model: @water_bill, local: true) do |form| %>
+  <% if @water_bill.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@water_bill.errors.count, "error") %> prohibited this water bill from being saved:</h2>
+      <ul>
+      <% @water_bill.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :unit_id %>
+    <%= form.collection_select :unit_id, @units, :id, :id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :tenant_id %>
+    <%= form.collection_select :tenant_id, @tenants, :id, :id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :billing_period %>
+    <%= form.date_field :billing_period %>
+  </div>
+
+  <div class="field">
+    <%= form.label :current_reading %>
+    <%= form.number_field :current_reading, step: :any %>
+  </div>
+
+  <div class="field">
+    <%= form.label :previous_reading %>
+    <%= form.number_field :previous_reading, step: :any %>
+  </div>
+
+  <div class="field">
+    <%= form.label :rate_per_unit %>
+    <%= form.number_field :rate_per_unit, step: :any %>
+  </div>
+
+  <div class="field">
+    <%= form.label :due_date %>
+    <%= form.date_field :due_date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :paid %>
+    <%= form.check_box :paid %>
+  </div>
+
+  <div class="field">
+    <%= form.label :reconnection_fee %>
+    <%= form.number_field :reconnection_fee, step: :any, value: @water_bill.reconnection_fee || 0 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :disconnected %>
+    <%= form.check_box :disconnected %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

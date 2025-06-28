@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: user1@example.com
+  encrypted_password: "$2a$12$KIXQ4QyQ5QyQ5QyQ5QyQ5QeQ5QyQ5QyQ5QyQ5QyQ5QyQ5QyQ5Qy"
+  name: User One
+  role: tenant
+  created_at: <%= Time.now %>
+  updated_at: <%= Time.now %>
+  active: true
+
+two:
+  email: user2@example.com
+  encrypted_password: "$2a$12$KIXQ4QyQ5QyQ5QyQ5QyQ5QeQ5QyQ5QyQ5QyQ5QyQ5QyQ5QyQ5Qy"
+  name: User Two
+  role: tenant
+  created_at: <%= Time.now %>
+  updated_at: <%= Time.now %>
+  active: true 

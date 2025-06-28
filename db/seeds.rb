@@ -27,21 +27,21 @@ puts "Properties created: #{Property.count}"
 
 # Create sample units
 unit1 = Unit.find_or_create_by!(unit_number: "A101") do |u|
-  u.property = property1
+  u.property_id = property1.id
   u.unit_type = "1 Bedroom"
   u.rent_amount = 1500.00
   u.occupied = true
 end
 
 unit2 = Unit.find_or_create_by!(unit_number: "A102") do |u|
-  u.property = property1
+  u.property_id = property1.id
   u.unit_type = "2 Bedroom"
   u.rent_amount = 2000.00
   u.occupied = true
 end
 
 unit3 = Unit.find_or_create_by!(unit_number: "B201") do |u|
-  u.property = property2
+  u.property_id = property2.id
   u.unit_type = "Studio"
   u.rent_amount = 1200.00
   u.occupied = false
@@ -54,12 +54,16 @@ tenant_user1 = User.find_or_create_by!(email: "tenant1@example.com") do |u|
   u.name = "John Doe"
   u.role = "tenant"
   u.phone = "+1234567890"
+  u.password = "password123"
+  u.password_confirmation = "password123"
 end
 
 tenant_user2 = User.find_or_create_by!(email: "tenant2@example.com") do |u|
   u.name = "Jane Smith"
   u.role = "tenant"
   u.phone = "+1234567891"
+  u.password = "password123"
+  u.password_confirmation = "password123"
 end
 
 puts "Users created: #{User.count}"
@@ -105,6 +109,7 @@ end
 MaintenanceRequest.find_or_create_by!(title: "Light Bulb Replacement") do |mr|
   mr.property = property2
   mr.unit = unit3
+  mr.tenant = tenant1
   mr.description = "Several light bulbs need replacement in common areas"
   mr.priority = "low"
   mr.status = "completed"

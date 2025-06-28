@@ -60,7 +60,7 @@
           <tbody>
             <% @rent_payments.last(10).reverse.each do |payment| %>
               <tr>
-                <td><%= payment.tenant&.name || 'N/A' %></td>
+                <td><%= payment.tenant&.user&.name || payment.tenant&.user&.email || 'N/A' %></td>
                 <td><%= payment.unit&.id || 'N/A' %></td>
                 <td><%= payment.amount || 'N/A' %></td>
                 <td><%= payment.status || 'N/A' %></td>
@@ -98,7 +98,7 @@
               <tr>
                 <td><%= req.property&.name || 'N/A' %></td>
                 <td><%= req.unit&.id || 'N/A' %></td>
-                <td><%= req.tenant&.name || 'N/A' %></td>
+                <td><%= req.tenant&.user&.name || req.tenant&.user&.email || 'N/A' %></td>
                 <td><%= req.description || 'N/A' %></td>
                 <td><%= req.status || 'N/A' %></td>
                 <td><%= req.created_at.strftime('%Y-%m-%d') if req.created_at %></td>

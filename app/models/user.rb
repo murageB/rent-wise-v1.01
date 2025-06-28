@@ -45,6 +45,8 @@ class User < ApplicationRecord
     update(last_login_at: Time.current)
   end
 
+  has_one :tenant
+
   private
 
   def downcase_email

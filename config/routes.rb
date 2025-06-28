@@ -14,6 +14,11 @@ Rails.application.routes.draw do
   resources :tenants
   resources :maintenance_requests
   resources :rent_payments
+  resources :water_bills do
+    member do
+      patch :mark_as_paid
+    end
+  end
   
   # Home route (keeping for backward compatibility)
   get 'home', to: 'home#index'
@@ -28,4 +33,4 @@ Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
-end
+end 
