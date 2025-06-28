@@ -8,9 +8,11 @@ A comprehensive property management system built with Ruby on Rails and integrat
 - **User Authentication** - Devise-based authentication with role-based access control
 - **Property Management** - Complete CRUD operations for properties with modern UI
 - **Role-Based Dashboards** - Separate dashboards for landlords, tenants, and caretakers
-- **Water Billing System** - Automated water meter readings and billing
-- **Maintenance Requests** - Track and manage property maintenance
+- **Water Billing System** - Automated water meter readings, billing, and disconnection management
+- **Maintenance Requests** - Track and manage property maintenance with status updates
 - **Rent Payment Tracking** - Monitor rent payments and financial data
+- **Tenant Management** - Complete tenant lifecycle management
+- **Unit Management** - Property unit tracking and assignment
 
 ### Blockchain Integration
 - **Quorum Private Blockchain** - IBFT 2.0 consensus with Tessera privacy
@@ -24,7 +26,8 @@ A comprehensive property management system built with Ruby on Rails and integrat
 - **Font Awesome Icons** - Professional iconography
 - **Google Fonts** - Typography optimization
 - **Role-Based Navigation** - Contextual navigation based on user role
-- **Responsive Design** - Mobile-friendly interface
+- **Mobile-First Responsive Design** - Optimized for mobile and desktop
+- **Touch-Friendly Interface** - Enhanced mobile experience with proper touch targets
 
 ### Technology Stack
 - **Backend**: Ruby on Rails 7.1.5.1
@@ -34,6 +37,7 @@ A comprehensive property management system built with Ruby on Rails and integrat
 - **Privacy**: Tessera for private transactions
 - **Frontend**: Rails ERB templates with Bootstrap 5
 - **Styling**: Bootstrap 5, Font Awesome, Google Fonts
+- **Testing**: Rails system tests and unit tests
 
 ## 📁 Project Structure
 
@@ -43,21 +47,33 @@ rent-wise-app/
 │   ├── controllers/          # Rails controllers
 │   │   ├── dashboard_controller.rb    # Role-based dashboard logic
 │   │   ├── properties_controller.rb   # Property management
+│   │   ├── tenants_controller.rb      # Tenant management
+│   │   ├── units_controller.rb        # Unit management
+│   │   ├── water_bills_controller.rb  # Water billing system
+│   │   ├── maintenance_requests_controller.rb # Maintenance tracking
 │   │   ├── blockchain_controller.rb   # Blockchain integration
 │   │   └── home_controller.rb         # Landing page
 │   ├── models/              # ActiveRecord models
 │   │   ├── user.rb          # User with role-based access
 │   │   ├── property.rb      # Property management
+│   │   ├── tenant.rb        # Tenant information
+│   │   ├── unit.rb          # Property units
+│   │   ├── water_bill.rb    # Water billing
 │   │   └── maintenance_request.rb
 │   ├── views/               # ERB templates
 │   │   ├── dashboard/       # Role-specific dashboards
 │   │   ├── properties/      # Property views
+│   │   ├── tenants/         # Tenant management views
+│   │   ├── units/           # Unit management views
+│   │   ├── water_bills/     # Water billing views
+│   │   ├── maintenance_requests/ # Maintenance views
 │   │   ├── devise/          # Authentication views
 │   │   └── layouts/         # Application layout
 │   └── services/            # Blockchain service
 ├── contracts/               # Solidity smart contracts
 ├── medium/                  # Documentation articles
 ├── quorum-dev-quickstart/   # Blockchain network setup
+├── test/                    # Comprehensive test suite
 └── config/                  # Rails configuration
 ```
 
@@ -84,24 +100,40 @@ rent-wise-app/
 
 3. **Setup database:**
    ```bash
-   rails db:create
-   rails db:migrate
-   rails db:seed
+   bin/rails db:create
+   bin/rails db:migrate
+   bin/rails db:seed
    ```
 
 4. **Start Rails server:**
    ```bash
-   rails server -p 3001
+   bin/rails server -p 3001 -b 0.0.0.0
    ```
 
 5. **Access the application:**
-   - Open http://localhost:3001
+   - **Desktop**: http://localhost:3001
+   - **Mobile**: http://[YOUR_IP]:3001 (see Mobile Access section)
    - Sign up with a new account or use test credentials
 
 ### Test Users (from seed data)
 - **Landlord**: landlord@test.com / password123
 - **Tenant**: tenant@test.com / password123
 - **Caretaker**: caretaker@test.com / password123
+
+### Mobile Access Setup
+
+1. **Find your computer's IP address:**
+   ```bash
+   hostname -I
+   ```
+
+2. **Ensure your mobile device is on the same WiFi network**
+
+3. **Access the app on mobile:**
+   ```
+   http://[YOUR_IP]:3001
+   ```
+   Example: `http://192.168.0.106:3001`
 
 ### Blockchain Network Setup
 
@@ -124,20 +156,58 @@ rent-wise-app/
 ## 🔗 Application Features
 
 ### Role-Based Access
-- **Landlord Dashboard**: Property overview, rent payments, maintenance requests
-- **Tenant Dashboard**: Personal property info, rent history, maintenance requests
-- **Caretaker Dashboard**: Property management, maintenance tracking
+- **Landlord Dashboard**: Property overview, rent payments, maintenance requests, tenant management
+- **Tenant Dashboard**: Personal property info, rent history, maintenance requests, water bills
+- **Caretaker Dashboard**: Property management, maintenance tracking, unit management
 
 ### Key Pages
 - **Home** (`/`) - Landing page with navigation
 - **Dashboard** (`/dashboard`) - Role-based dashboard
 - **Properties** (`/properties`) - Property management
+- **Tenants** (`/tenants`) - Tenant management
+- **Units** (`/units`) - Unit management
+- **Water Bills** (`/water_bills`) - Water billing system
+- **Maintenance Requests** (`/maintenance_requests`) - Maintenance tracking
 - **Blockchain Status** (`/blockchain/status`) - Network health
 
 ### Authentication
 - **Sign Up** (`/users/sign_up`) - User registration with role selection
 - **Sign In** (`/users/sign_in`) - User login
 - **Sign Out** (`/users/sign_out`) - User logout
+
+## 📱 Mobile Responsiveness
+
+### Mobile-First Design
+- **Responsive Breakpoints**: Optimized for mobile, tablet, and desktop
+- **Touch-Friendly Interface**: Minimum 44px touch targets
+- **Mobile Navigation**: Collapsible navigation menu
+- **Responsive Tables**: Horizontal scrolling for data tables
+- **Mobile-Optimized Forms**: Touch-friendly form elements
+- **Viewport Optimization**: Proper mobile viewport configuration
+
+### Mobile Features
+- **Responsive Dashboard**: Adapts to mobile screen sizes
+- **Mobile-Friendly Tables**: Horizontal scrolling for data tables
+- **Touch-Optimized Buttons**: Proper sizing for mobile interaction
+- **Mobile Navigation**: Hamburger menu for mobile devices
+- **Responsive Typography**: Scales appropriately for mobile screens
+
+## 🧪 Testing
+
+### Run All Tests
+```bash
+bin/rails test
+```
+
+### Test Coverage
+- **System Tests**: End-to-end user interaction tests
+- **Controller Tests**: API and controller logic tests
+- **Model Tests**: Business logic and validation tests
+- **Integration Tests**: Cross-component functionality tests
+
+### Test Users for Testing
+- All test fixtures are included in the `test/fixtures/` directory
+- Comprehensive test data for properties, tenants, units, and maintenance requests
 
 ## 📚 Documentation
 
@@ -160,6 +230,7 @@ The `medium/` directory contains comprehensive documentation:
 - **Encrypted Storage** - Sensitive data encryption
 - **Role-based Access** - User permission management
 - **CSRF Protection** - Cross-site request forgery protection
+- **Strong Parameters** - Secure form handling
 
 ## 🚀 Recent Updates (v1.01)
 
@@ -170,6 +241,9 @@ The `medium/` directory contains comprehensive documentation:
 - **Enhanced Authentication**: Improved Devise integration with custom fields
 - **Database Optimization**: Cleaned up migrations and schema
 - **Server Stability**: Fixed port conflicts and process management
+- **Mobile Responsiveness**: Comprehensive mobile-first design implementation
+- **Water Billing System**: Complete water billing with disconnection management
+- **Comprehensive Testing**: Full test suite with fixtures and system tests
 
 ### Technical Fixes
 - **Authentication Issues**: Resolved Devise password handling conflicts
@@ -177,6 +251,15 @@ The `medium/` directory contains comprehensive documentation:
 - **Dependency Management**: Cleaned up gem dependencies and bundle issues
 - **Database Schema**: Aligned migrations with current schema
 - **Node.js Cleanup**: Removed outdated Node.js artifacts and configurations
+- **Mobile Responsiveness**: Fixed mobile layout and touch interface issues
+- **SSL Configuration**: Added proper SSL configuration for mobile access
+
+### Mobile Enhancements
+- **Responsive CSS**: Comprehensive mobile-specific styles
+- **Touch Optimization**: Proper touch targets and mobile navigation
+- **Viewport Configuration**: Optimized viewport settings for mobile
+- **Mobile Tables**: Horizontal scrolling for data tables on mobile
+- **Responsive Typography**: Mobile-optimized font sizes and spacing
 
 ## 🚀 Deployment
 
@@ -195,29 +278,62 @@ QUORUM_PRIVATE_KEY=your_private_key
 RAILS_MASTER_KEY=your_master_key
 ```
 
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **Port Already in Use**
+   ```bash
+   pkill -f "rails server" && pkill -f "puma"
+   rm -f tmp/pids/server.pid
+   ```
+
+2. **Bundle Install Issues**
+   ```bash
+   bundle install
+   ```
+
+3. **Database Migration Issues**
+   ```bash
+   bin/rails db:migrate
+   ```
+
+4. **Mobile Access Issues**
+   - Ensure using `http://` not `https://`
+   - Check firewall settings
+   - Verify same WiFi network
+
+### Server Management
+```bash
+# Start server
+bin/rails server -p 3001 -b 0.0.0.0
+
+# Stop server
+pkill -f "rails server"
+
+# Check server status
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3001
+```
+
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests
+4. Add tests for new functionality
 5. Submit a pull request
 
 ## 📄 License
 
-**Copyright © 2024 Desire AI - Property of MurageB**
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-All rights reserved. This software and associated documentation files (the "Software") are the exclusive property of Desire AI, owned by MurageB. 
+## 🆘 Support
 
-The Software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
-
-## 📞 Support
-
-For support and inquiries:
-- **Developer**: MurageB
-- **Organization**: Desire AI
-- **Repository**: https://github.com/murageB/rent-wise-v1.01
+For support and questions:
+- Check the documentation in the `medium/` directory
+- Review the troubleshooting section
+- Open an issue on GitHub
 
 ---
 
-**Built with ❤️ by Desire AI - Property of MurageB**
+**RentWise v1.01** - Making property management smarter with blockchain technology.
