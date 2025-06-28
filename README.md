@@ -5,11 +5,12 @@ A comprehensive property management system built with Ruby on Rails and integrat
 ## 🚀 Features
 
 ### Core Property Management
-- **User Authentication** - Devise-based authentication with role-based access
-- **Property Management** - Complete CRUD operations for properties
-- **Tenant Management** - Tenant registration, profiles, and lease management
+- **User Authentication** - Devise-based authentication with role-based access control
+- **Property Management** - Complete CRUD operations for properties with modern UI
+- **Role-Based Dashboards** - Separate dashboards for landlords, tenants, and caretakers
 - **Water Billing System** - Automated water meter readings and billing
 - **Maintenance Requests** - Track and manage property maintenance
+- **Rent Payment Tracking** - Monitor rent payments and financial data
 
 ### Blockchain Integration
 - **Quorum Private Blockchain** - IBFT 2.0 consensus with Tessera privacy
@@ -18,29 +19,46 @@ A comprehensive property management system built with Ruby on Rails and integrat
 - **Blockchain Service** - HTTP-based interaction with Quorum RPC
 - **Property Registry Contract** - On-chain property ownership verification
 
+### Modern UI/UX
+- **Bootstrap 5** - Responsive, modern design framework
+- **Font Awesome Icons** - Professional iconography
+- **Google Fonts** - Typography optimization
+- **Role-Based Navigation** - Contextual navigation based on user role
+- **Responsive Design** - Mobile-friendly interface
+
 ### Technology Stack
 - **Backend**: Ruby on Rails 7.1.5.1
 - **Database**: PostgreSQL with Supabase
-- **Authentication**: Devise
+- **Authentication**: Devise with custom user fields
 - **Blockchain**: Quorum (Hyperledger Besu) with IBFT 2.0
 - **Privacy**: Tessera for private transactions
-- **Frontend**: React with TypeScript (separate app)
+- **Frontend**: Rails ERB templates with Bootstrap 5
+- **Styling**: Bootstrap 5, Font Awesome, Google Fonts
 
 ## 📁 Project Structure
 
 ```
 rent-wise-app/
-├── v1.01/rent_wise/          # Rails application
-│   ├── app/
-│   │   ├── controllers/      # Rails controllers
-│   │   ├── models/          # ActiveRecord models
-│   │   ├── views/           # ERB templates
-│   │   └── services/        # Blockchain service
-│   ├── contracts/           # Solidity smart contracts
-│   ├── medium/              # Documentation articles
-│   └── config/              # Rails configuration
-├── src/                     # React frontend (separate app)
-└── quorum-dev-quickstart/   # Blockchain network setup
+├── app/
+│   ├── controllers/          # Rails controllers
+│   │   ├── dashboard_controller.rb    # Role-based dashboard logic
+│   │   ├── properties_controller.rb   # Property management
+│   │   ├── blockchain_controller.rb   # Blockchain integration
+│   │   └── home_controller.rb         # Landing page
+│   ├── models/              # ActiveRecord models
+│   │   ├── user.rb          # User with role-based access
+│   │   ├── property.rb      # Property management
+│   │   └── maintenance_request.rb
+│   ├── views/               # ERB templates
+│   │   ├── dashboard/       # Role-specific dashboards
+│   │   ├── properties/      # Property views
+│   │   ├── devise/          # Authentication views
+│   │   └── layouts/         # Application layout
+│   └── services/            # Blockchain service
+├── contracts/               # Solidity smart contracts
+├── medium/                  # Documentation articles
+├── quorum-dev-quickstart/   # Blockchain network setup
+└── config/                  # Rails configuration
 ```
 
 ## 🛠️ Installation & Setup
@@ -49,14 +67,14 @@ rent-wise-app/
 - Ruby 3.0.2+
 - Rails 7.1.5.1
 - PostgreSQL
-- Node.js (for React frontend)
 - Docker (for Quorum blockchain)
 
 ### Rails Application Setup
 
-1. **Navigate to Rails app directory:**
+1. **Clone the repository:**
    ```bash
-   cd v1.01/rent_wise
+   git clone https://github.com/murageB/rent-wise-v1.01.git
+   cd rent-wise-app
    ```
 
 2. **Install dependencies:**
@@ -76,6 +94,15 @@ rent-wise-app/
    rails server -p 3001
    ```
 
+5. **Access the application:**
+   - Open http://localhost:3001
+   - Sign up with a new account or use test credentials
+
+### Test Users (from seed data)
+- **Landlord**: landlord@test.com / password123
+- **Tenant**: tenant@test.com / password123
+- **Caretaker**: caretaker@test.com / password123
+
 ### Blockchain Network Setup
 
 1. **Navigate to Quorum directory:**
@@ -94,41 +121,23 @@ rent-wise-app/
    npm run network:status
    ```
 
-### React Frontend Setup
+## 🔗 Application Features
 
-1. **Navigate to React app:**
-   ```bash
-   cd src
-   ```
+### Role-Based Access
+- **Landlord Dashboard**: Property overview, rent payments, maintenance requests
+- **Tenant Dashboard**: Personal property info, rent history, maintenance requests
+- **Caretaker Dashboard**: Property management, maintenance tracking
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Start development server:**
-   ```bash
-   npm start
-   ```
-
-## 🔗 API Endpoints
+### Key Pages
+- **Home** (`/`) - Landing page with navigation
+- **Dashboard** (`/dashboard`) - Role-based dashboard
+- **Properties** (`/properties`) - Property management
+- **Blockchain Status** (`/blockchain/status`) - Network health
 
 ### Authentication
-- `POST /users/sign_up` - User registration
-- `POST /users/sign_in` - User login
-- `DELETE /users/sign_out` - User logout
-
-### Properties
-- `GET /properties` - List all properties
-- `POST /properties` - Create new property
-- `GET /properties/:id` - Get property details
-- `PUT /properties/:id` - Update property
-- `DELETE /properties/:id` - Delete property
-
-### Blockchain
-- `GET /blockchain/status` - Blockchain network status
-- `POST /blockchain/contracts/deploy` - Deploy smart contract
-- `POST /blockchain/transactions` - Submit transaction
+- **Sign Up** (`/users/sign_up`) - User registration with role selection
+- **Sign In** (`/users/sign_in`) - User login
+- **Sign Out** (`/users/sign_out`) - User logout
 
 ## 📚 Documentation
 
@@ -146,10 +155,28 @@ The `medium/` directory contains comprehensive documentation:
 
 ## 🔐 Security Features
 
-- **Devise Authentication** - Secure user authentication
+- **Devise Authentication** - Secure user authentication with encrypted passwords
 - **Private Blockchain** - Data privacy through Quorum
 - **Encrypted Storage** - Sensitive data encryption
 - **Role-based Access** - User permission management
+- **CSRF Protection** - Cross-site request forgery protection
+
+## 🚀 Recent Updates (v1.01)
+
+### Major Improvements
+- **Full Rails Migration**: Removed React frontend, now fully Rails-based
+- **Modern UI**: Implemented Bootstrap 5 with responsive design
+- **Role-Based Dashboards**: Separate dashboards for different user types
+- **Enhanced Authentication**: Improved Devise integration with custom fields
+- **Database Optimization**: Cleaned up migrations and schema
+- **Server Stability**: Fixed port conflicts and process management
+
+### Technical Fixes
+- **Authentication Issues**: Resolved Devise password handling conflicts
+- **Server Conflicts**: Fixed Rails server port conflicts and PID file issues
+- **Dependency Management**: Cleaned up gem dependencies and bundle issues
+- **Database Schema**: Aligned migrations with current schema
+- **Node.js Cleanup**: Removed outdated Node.js artifacts and configurations
 
 ## 🚀 Deployment
 
