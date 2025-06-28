@@ -1,0 +1,15 @@
+current directory: /home/murage/RentWise v1.01/rent-wise-app/v1.01/rent_wise/v1.01/rent_wise/vendor/bundle/ruby/3.0.0/gems/cgi-0.5.0/ext/cgi/escape
+/usr/bin/ruby3.0 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20250628-2976813-3fupv9.rb extconf.rb
+creating Makefile
+
+current directory: /home/murage/RentWise v1.01/rent-wise-app/v1.01/rent_wise/v1.01/rent_wise/vendor/bundle/ruby/3.0.0/gems/cgi-0.5.0/ext/cgi/escape
+make DESTDIR\= clean
+
+current directory: /home/murage/RentWise v1.01/rent-wise-app/v1.01/rent_wise/v1.01/rent_wise/vendor/bundle/ruby/3.0.0/gems/cgi-0.5.0/ext/cgi/escape
+make DESTDIR\=
+compiling escape.c
+linking shared-object cgi/escape.so
+
+current directory: /home/murage/RentWise v1.01/rent-wise-app/v1.01/rent_wise/v1.01/rent_wise/vendor/bundle/ruby/3.0.0/gems/cgi-0.5.0/ext/cgi/escape
+make DESTDIR\= install
+/usr/bin/install -c -m 0755 escape.so ./.gem.20250628-2976813-so959r/cgi

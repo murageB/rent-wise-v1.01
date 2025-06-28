@@ -1,4 +1,22 @@
 Rails.application.routes.draw do
+  get '/dashboard', to: 'dashboard#index', as: :dashboard
+  get 'dashboard/index'
+  get 'rent_payments/index'
+  get 'rent_payments/show'
+  get 'rent_payments/new'
+  get 'rent_payments/edit'
+  get 'maintenance_requests/index'
+  get 'maintenance_requests/show'
+  get 'maintenance_requests/new'
+  get 'maintenance_requests/edit'
+  get 'tenants/index'
+  get 'tenants/show'
+  get 'tenants/new'
+  get 'tenants/edit'
+  get 'units/index'
+  get 'units/show'
+  get 'units/new'
+  get 'units/edit'
   devise_for :users
   resources :properties
   

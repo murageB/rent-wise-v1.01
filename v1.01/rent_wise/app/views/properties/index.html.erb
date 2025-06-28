@@ -1,14 +1,81 @@
 <p style="color: green"><%= notice %></p>
 
-<h1>Properties</h1>
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1 class="fw-bold">
+        <i class="fas fa-building me-2"></i>Properties
+      </h1>
+      <p class="text-muted">Manage your property portfolio with ease</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+      <%= link_to new_property_path, class: "btn btn-primary" do %>
+        <i class="fas fa-plus me-2"></i>Add Property
+      <% end %>
+    </div>
+  </div>
 
-<div id="properties">
-  <% @properties.each do |property| %>
-    <%= render property %>
-    <p>
-      <%= link_to "Show this property", property %>
-    </p>
+  <% if @properties.any? %>
+    <div class="row g-4">
+      <% @properties.each do |property| %>
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="card-title fw-semibold mb-0">
+                  <i class="fas fa-home me-2 text-primary"></i>
+                  <%= property.name %>
+                </h5>
+                <span class="badge bg-success">Active</span>
+              </div>
+              
+              <p class="card-text text-muted mb-3">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                <%= property.address %>
+              </p>
+              
+              <div class="row text-center mb-3">
+                <div class="col-4">
+                  <div class="border-end">
+                    <h6 class="fw-bold text-primary mb-0"><%= property.units.count %></h6>
+                    <small class="text-muted">Units</small>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="border-end">
+                    <h6 class="fw-bold text-success mb-0"><%= property.units.joins(:tenant).count %></h6>
+                    <small class="text-muted">Occupied</small>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <h6 class="fw-bold text-warning mb-0">$<%= property.monthly_rent || 0 %></h6>
+                  <small class="text-muted">Monthly</small>
+                </div>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <%= link_to property_path(property), class: "btn btn-outline-primary btn-sm" do %>
+                  <i class="fas fa-eye me-1"></i>View Details
+                <% end %>
+                <%= link_to edit_property_path(property), class: "btn btn-outline-secondary btn-sm" do %>
+                  <i class="fas fa-edit me-1"></i>Edit
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <div class="mb-4">
+        <i class="fas fa-building text-muted" style="font-size: 5rem;"></i>
+      </div>
+      <h3 class="fw-bold mb-3">No Properties Yet</h3>
+      <p class="text-muted mb-4">Get started by adding your first property to your portfolio.</p>
+      <%= link_to new_property_path, class: "btn btn-primary btn-lg" do %>
+        <i class="fas fa-plus me-2"></i>Add Your First Property
+      <% end %>
+    </div>
   <% end %>
 </div>
-
-<%= link_to "New property", new_property_path %>

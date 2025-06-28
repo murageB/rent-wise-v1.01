@@ -1,0 +1,68 @@
+<div style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+  <h1 style="color: #1d3557; margin-bottom: 30px;">Welcome to RentWise</h1>
+  
+  <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+    <h2 style="color: #1d3557; margin-bottom: 20px;">Dashboard Overview</h2>
+    <p style="font-size: 1.1rem; color: #666; margin-bottom: 30px;">
+      Welcome to your RentWise dashboard. Here's what you can do:
+    </p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+        <h3 style="color: #457b9d; margin-bottom: 10px;">Properties</h3>
+        <p style="font-size: 2rem; margin: 0; font-weight: bold;"><%= @properties.count %></p>
+        <a href="/properties" style="color: #457b9d; text-decoration: none;">View Properties →</a>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+        <h3 style="color: #1d3557; margin-bottom: 10px;">Units</h3>
+        <p style="font-size: 2rem; margin: 0; font-weight: bold;"><%= @units.count %></p>
+        <a href="/units" style="color: #1d3557; text-decoration: none;">View Units →</a>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+        <h3 style="color: #e63946; margin-bottom: 10px;">Tenants</h3>
+        <p style="font-size: 2rem; margin: 0; font-weight: bold;"><%= @tenants.count %></p>
+        <a href="/tenants" style="color: #e63946; text-decoration: none;">View Tenants →</a>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+        <h3 style="color: #2a9d8f; margin-bottom: 10px;">Maintenance</h3>
+        <p style="font-size: 2rem; margin: 0; font-weight: bold;"><%= @maintenance_requests.count %></p>
+        <a href="/maintenance_requests" style="color: #2a9d8f; text-decoration: none;">View Requests →</a>
+      </div>
+    </div>
+    
+    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+      <a href="/properties/new" style="padding: 12px 24px; background: #457b9d; color: white; text-decoration: none; border-radius: 5px;">Add Property</a>
+      <a href="/units/new" style="padding: 12px 24px; background: #1d3557; color: white; text-decoration: none; border-radius: 5px;">Add Unit</a>
+      <a href="/tenants/new" style="padding: 12px 24px; background: #e63946; color: white; text-decoration: none; border-radius: 5px;">Add Tenant</a>
+      <a href="/maintenance_requests/new" style="padding: 12px 24px; background: #2a9d8f; color: white; text-decoration: none; border-radius: 5px;">Create Request</a>
+    </div>
+  </div>
+  
+  <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h3 style="color: #1d3557; margin-bottom: 15px;">Recent Activity</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <div>
+        <h4 style="color: #457b9d;">Recent Maintenance Requests</h4>
+        <% @maintenance_requests.order(created_at: :desc).limit(5).each do |request| %>
+          <div style="padding: 8px; border-bottom: 1px solid #eee;">
+            <strong><%= request.title %></strong><br>
+            <small style="color: #666;"><%= request.status %> • <%= request.created_at.strftime("%b %d") %></small>
+          </div>
+        <% end %>
+      </div>
+      
+      <div>
+        <h4 style="color: #e63946;">Recent Rent Payments</h4>
+        <% @rent_payments.order(payment_date: :desc).limit(5).each do |payment| %>
+          <div style="padding: 8px; border-bottom: 1px solid #eee;">
+            <strong>$<%= payment.amount %></strong><br>
+            <small style="color: #666;"><%= payment.status %> • <%= payment.payment_date.strftime("%b %d") %></small>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div> 

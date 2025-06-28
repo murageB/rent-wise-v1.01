@@ -1,0 +1,8 @@
+<h1>Tenants</h1>
+<ul>
+  <% @tenants.each do |tenant| %>
+    <li>
+      <%= link_to tenant.user&.name || 'Tenant', tenant_path(tenant) %> (Unit: <%= tenant.unit&.unit_number %>)
+    </li>
+  <% end %>
+</ul>

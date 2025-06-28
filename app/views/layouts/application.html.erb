@@ -1,43 +1,239 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>RentWise</title>
+    <title>RentWise - Smart Property Management</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+      :root {
+        --primary-color: #2563eb;
+        --secondary-color: #64748b;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --light-bg: #f8fafc;
+        --dark-bg: #1e293b;
+        --border-color: #e2e8f0;
+      }
+      
+      * {
+        font-family: 'Inter', sans-serif;
+      }
+      
+      body {
+        background-color: var(--light-bg);
+        color: #334155;
+      }
+      
+      .navbar {
+        background: linear-gradient(135deg, var(--primary-color), #1d4ed8);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: white !important;
+      }
+      
+      .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+      
+      .navbar-nav .nav-link:hover {
+        color: white !important;
+      }
+      
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), #1d4ed8);
+        border: none;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+      }
+      
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+      }
+      
+      .form-control {
+        border: 2px solid var(--border-color);
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+      
+      .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+      }
+      
+      .card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        background: white;
+      }
+      
+      .card-header {
+        background: linear-gradient(135deg, var(--primary-color), #1d4ed8);
+        color: white;
+        border-radius: 1rem 1rem 0 0 !important;
+        font-weight: 600;
+      }
+      
+      .alert {
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 500;
+      }
+      
+      .container {
+        max-width: 1200px;
+      }
+      
+      .hero-section {
+        background: linear-gradient(135deg, var(--primary-color), #1d4ed8);
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+      }
+      
+      .hero-section h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+      
+      .hero-section p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+      }
+      
+      .feature-card {
+        text-align: center;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+      
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+      
+      .feature-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+    </style>
   </head>
 
   <body>
-    <div style="text-align:right; margin: 1rem;">
-      <% if user_signed_in? %>
-        Signed in as <strong><%= current_user.email %></strong> |
-        <%= link_to 'Edit profile', edit_user_registration_path %> |
-        <%= link_to 'Log out', destroy_user_session_path, method: :delete %>
-      <% else %>
-        <%= link_to 'Sign up', new_user_registration_path %> |
-        <%= link_to 'Log in', new_user_session_path %>
-      <% end %>
-    </div>
-    
-    <!-- Navigation -->
-    <nav style="background-color: #f8f9fa; padding: 1rem; margin-bottom: 2rem;">
-      <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <%= link_to 'RentWise', root_path, style: 'font-size: 1.5rem; font-weight: bold; text-decoration: none; color: #333;' %>
-        </div>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="fas fa-home me-2"></i>RentWise
+        </a>
         
-        <% if user_signed_in? %>
-          <div style="display: flex; gap: 1rem;">
-            <%= link_to 'Properties', properties_path, style: 'text-decoration: none; color: #007bff;' %>
-            <%= link_to 'Blockchain Status', blockchain_status_path, style: 'text-decoration: none; color: #007bff;' %>
-            <%= link_to 'Latest Blocks', blockchain_latest_blocks_path, style: 'text-decoration: none; color: #007bff;' %>
-          </div>
-        <% end %>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/properties">Properties</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/blockchain/status">Blockchain</a>
+            </li>
+          </ul>
+          
+          <ul class="navbar-nav">
+            <% if user_signed_in? %>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                  <i class="fas fa-user me-1"></i><%= current_user.name %>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %></li>
+                </ul>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <a class="nav-link" href="/users/sign_in">Sign In</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/users/sign_up">Sign Up</a>
+              </li>
+            <% end %>
+          </ul>
+        </div>
       </div>
     </nav>
+
+    <% if notice %>
+      <div class="container mt-3">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="fas fa-check-circle me-2"></i><%= notice %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      </div>
+    <% end %>
     
-    <%= yield %>
+    <% if alert %>
+      <div class="container mt-3">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="fas fa-exclamation-circle me-2"></i><%= alert %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      </div>
+    <% end %>
+
+    <main>
+      <%= yield %>
+    </main>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5><i class="fas fa-home me-2"></i>RentWise</h5>
+            <p class="mb-0">Smart property management powered by blockchain technology.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="mb-0">&copy; 2025 RentWise. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

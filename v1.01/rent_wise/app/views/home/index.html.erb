@@ -1,7 +1,162 @@
-<div style="text-align:center; margin-top: 60px;">
-  <h1 style="font-size:2.5rem; margin-bottom: 1rem;">Welcome to RentWise</h1>
-  <p style="font-size:1.2rem; color:#555;">Your all-in-one property management platform.</p>
-  <div style="margin-top:2rem;">
-    <a href="/properties" style="padding: 0.75rem 1.5rem; background: #e63946; color: #fff; border-radius: 5px; text-decoration: none; font-weight: bold;">View Properties</a>
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1>Smart Property Management</h1>
+        <p class="lead mb-4">Revolutionize your property management with blockchain technology. Secure, transparent, and efficient solutions for landlords, tenants, and caretakers.</p>
+        <div class="d-flex gap-3">
+          <% if user_signed_in? %>
+            <a href="/dashboard" class="btn btn-light btn-lg">
+              <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+            </a>
+          <% else %>
+            <a href="/users/sign_up" class="btn btn-light btn-lg">
+              <i class="fas fa-rocket me-2"></i>Get Started
+            </a>
+            <a href="/users/sign_in" class="btn btn-outline-light btn-lg">
+              <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            </a>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center">
+        <i class="fas fa-building" style="font-size: 15rem; opacity: 0.3;"></i>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-lg-8 mx-auto">
+        <h2 class="fw-bold mb-3">Why Choose RentWise?</h2>
+        <p class="lead text-muted">Experience the future of property management with our cutting-edge features</p>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">
+            <i class="fas fa-link"></i>
+          </div>
+          <h4 class="fw-semibold mb-3">Blockchain Integration</h4>
+          <p class="text-muted">All property transactions are recorded on the blockchain for maximum transparency and security.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <h4 class="fw-semibold mb-3">Real-time Analytics</h4>
+          <p class="text-muted">Get instant insights into your property performance, occupancy rates, and financial metrics.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">
+            <i class="fas fa-tools"></i>
+          </div>
+          <h4 class="fw-semibold mb-3">Maintenance Tracking</h4>
+          <p class="text-muted">Streamline maintenance requests and track repairs with our integrated system.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">
+            <i class="fas fa-credit-card"></i>
+          </div>
+          <h4 class="fw-semibold mb-3">Smart Payments</h4>
+          <p class="text-muted">Automated rent collection and payment processing with blockchain verification.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h4 class="fw-semibold mb-3">Mobile First</h4>
+          <p class="text-muted">Access your property management tools anywhere, anytime with our responsive design.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h4 class="fw-semibold mb-3">Enterprise Security</h4>
+          <p class="text-muted">Bank-level security with encryption and blockchain verification for all data.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-3">
+        <div class="mb-3">
+          <i class="fas fa-building text-primary" style="font-size: 3rem;"></i>
+        </div>
+        <h3 class="fw-bold text-primary">500+</h3>
+        <p class="text-muted">Properties Managed</p>
+      </div>
+      <div class="col-md-3">
+        <div class="mb-3">
+          <i class="fas fa-users text-success" style="font-size: 3rem;"></i>
+        </div>
+        <h3 class="fw-bold text-success">1,200+</h3>
+        <p class="text-muted">Happy Users</p>
+      </div>
+      <div class="col-md-3">
+        <div class="mb-3">
+          <i class="fas fa-chart-line text-warning" style="font-size: 3rem;"></i>
+        </div>
+        <h3 class="fw-bold text-warning">98%</h3>
+        <p class="text-muted">Satisfaction Rate</p>
+      </div>
+      <div class="col-md-3">
+        <div class="mb-3">
+          <i class="fas fa-clock text-info" style="font-size: 3rem;"></i>
+        </div>
+        <h3 class="fw-bold text-info">24/7</h3>
+        <p class="text-muted">Support Available</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--primary-color), #1d4ed8);">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-lg-8 mx-auto">
+        <h2 class="text-white fw-bold mb-3">Ready to Transform Your Property Management?</h2>
+        <p class="text-white opacity-75 lead mb-4">Join thousands of property managers who trust RentWise for their business.</p>
+        <% if user_signed_in? %>
+          <a href="/dashboard" class="btn btn-light btn-lg">
+            <i class="fas fa-tachometer-alt me-2"></i>Access Dashboard
+          </a>
+        <% else %>
+          <a href="/users/sign_up" class="btn btn-light btn-lg me-3">
+            <i class="fas fa-rocket me-2"></i>Start Free Trial
+          </a>
+          <a href="/users/sign_in" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+          </a>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

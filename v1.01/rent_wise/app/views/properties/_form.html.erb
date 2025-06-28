@@ -1,37 +1,140 @@
-<%= form_with(model: property) do |form| %>
-  <% if property.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(property.errors.count, "error") %> prohibited this property from being saved:</h2>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="mb-0">
+            <i class="fas fa-edit me-2"></i>
+            <%= property.new_record? ? 'Add New Property' : 'Edit Property' %>
+          </h3>
+        </div>
+        <div class="card-body p-4">
+          <%= form_with(model: property) do |form| %>
+            <% if property.errors.any? %>
+              <div class="alert alert-danger">
+                <h6 class="fw-semibold">
+                  <i class="fas fa-exclamation-triangle me-2"></i>
+                  <%= pluralize(property.errors.count, "error") %> prohibited this property from being saved:
+                </h6>
+                <ul class="mb-0 mt-2">
+                  <% property.errors.each do |error| %>
+                    <li><%= error.full_message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
 
-      <ul>
-        <% property.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <%= form.label :name, class: "form-label fw-semibold" %>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="fas fa-home"></i>
+                    </span>
+                    <%= form.text_field :name, class: "form-control", placeholder: "Enter property name" %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <%= form.label :address, class: "form-label fw-semibold" %>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="fas fa-map-marker-alt"></i>
+                    </span>
+                    <%= form.text_field :address, class: "form-control", placeholder: "Enter property address" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <%= form.label :property_type, class: "form-label fw-semibold" %>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="fas fa-building"></i>
+                    </span>
+                    <%= form.select :property_type, 
+                        options_for_select([
+                          ['Apartment Building', 'apartment'],
+                          ['House', 'house'],
+                          ['Commercial', 'commercial'],
+                          ['Mixed Use', 'mixed_use']
+                        ], property.property_type), 
+                        { prompt: 'Select property type' }, 
+                        { class: "form-select" } %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <%= form.label :monthly_rent, class: "form-label fw-semibold" %>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="fas fa-dollar-sign"></i>
+                    </span>
+                    <%= form.number_field :monthly_rent, class: "form-control", placeholder: "0.00", step: "0.01" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <%= form.label :total_units, class: "form-label fw-semibold" %>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="fas fa-door-open"></i>
+                    </span>
+                    <%= form.number_field :total_units, class: "form-control", placeholder: "Number of units" %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <%= form.label :year_built, class: "form-label fw-semibold" %>
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="fas fa-calendar"></i>
+                    </span>
+                    <%= form.number_field :year_built, class: "form-control", placeholder: "Year built" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-group">
+                <%= form.label :description, class: "form-label fw-semibold" %>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="fas fa-align-left"></i>
+                  </span>
+                  <%= form.text_area :description, class: "form-control", rows: 4, placeholder: "Describe the property..." %>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3">
+              <%= form.submit class: "btn btn-primary" do %>
+                <i class="fas fa-save me-2"></i>
+                <%= property.new_record? ? 'Create Property' : 'Update Property' %>
+              <% end %>
+              
+              <%= link_to properties_path, class: "btn btn-outline-secondary" do %>
+                <i class="fas fa-arrow-left me-2"></i>Back to Properties
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
-  <% end %>
-
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
   </div>
-
-  <div>
-    <%= form.label :address, style: "display: block" %>
-    <%= form.text_field :address %>
-  </div>
-
-  <div>
-    <%= form.label :property_type, style: "display: block" %>
-    <%= form.text_field :property_type %>
-  </div>
-
-  <div>
-    <%= form.label :status, style: "display: block" %>
-    <%= form.text_field :status %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+</div>

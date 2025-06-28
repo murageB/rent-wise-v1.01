@@ -1,10 +1,208 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @property %>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <!-- Property Details Card -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">
+              <i class="fas fa-home me-2"></i><%= @property.name %>
+            </h3>
+            <div>
+              <%= link_to edit_property_path(@property), class: "btn btn-outline-primary btn-sm me-2" do %>
+                <i class="fas fa-edit me-1"></i>Edit
+              <% end %>
+              <%= link_to properties_path, class: "btn btn-outline-secondary btn-sm" do %>
+                <i class="fas fa-arrow-left me-1"></i>Back
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <h6 class="fw-semibold text-muted mb-2">
+                <i class="fas fa-map-marker-alt me-2"></i>Address
+              </h6>
+              <p class="mb-0"><%= @property.address %></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <h6 class="fw-semibold text-muted mb-2">
+                <i class="fas fa-building me-2"></i>Type
+              </h6>
+              <p class="mb-0"><%= @property.property_type&.titleize || 'Not specified' %></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <h6 class="fw-semibold text-muted mb-2">
+                <i class="fas fa-dollar-sign me-2"></i>Monthly Rent
+              </h6>
+              <p class="mb-0">$<%= @property.monthly_rent || '0.00' %></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <h6 class="fw-semibold text-muted mb-2">
+                <i class="fas fa-door-open me-2"></i>Total Units
+              </h6>
+              <p class="mb-0"><%= @property.total_units || 'Not specified' %></p>
+            </div>
+            <% if @property.year_built %>
+              <div class="col-md-6 mb-3">
+                <h6 class="fw-semibold text-muted mb-2">
+                  <i class="fas fa-calendar me-2"></i>Year Built
+                </h6>
+                <p class="mb-0"><%= @property.year_built %></p>
+              </div>
+            <% end %>
+            <% if @property.description.present? %>
+              <div class="col-12 mb-3">
+                <h6 class="fw-semibold text-muted mb-2">
+                  <i class="fas fa-align-left me-2"></i>Description
+                </h6>
+                <p class="mb-0"><%= @property.description %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
 
-<div>
-  <%= link_to "Edit this property", edit_property_path(@property) %> |
-  <%= link_to "Back to properties", properties_path %>
+      <!-- Units Section -->
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+              <i class="fas fa-door-open me-2"></i>Units
+            </h4>
+            <button class="btn btn-primary btn-sm">
+              <i class="fas fa-plus me-1"></i>Add Unit
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <% if @property.units.any? %>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Unit Number</th>
+                    <th>Status</th>
+                    <th>Tenant</th>
+                    <th>Rent</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @property.units.each do |unit| %>
+                    <tr>
+                      <td><%= unit.unit_number %></td>
+                      <td>
+                        <% if unit.tenant %>
+                          <span class="badge bg-success">Occupied</span>
+                        <% else %>
+                          <span class="badge bg-warning">Vacant</span>
+                        <% end %>
+                      </td>
+                      <td>
+                        <% if unit.tenant %>
+                          <%= unit.tenant.name %>
+                        <% else %>
+                          <span class="text-muted">No tenant</span>
+                        <% end %>
+                      </td>
+                      <td>$<%= unit.monthly_rent || '0.00' %></td>
+                      <td>
+                        <div class="btn-group btn-group-sm">
+                          <button class="btn btn-outline-primary">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <button class="btn btn-outline-secondary">
+                            <i class="fas fa-edit"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <div class="text-center py-4">
+              <i class="fas fa-door-open text-muted mb-3" style="font-size: 3rem;"></i>
+              <h5 class="fw-semibold mb-2">No Units Added</h5>
+              <p class="text-muted mb-3">Start by adding units to this property.</p>
+              <button class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add First Unit
+              </button>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
 
-  <%= button_to "Destroy this property", @property, method: :delete %>
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <!-- Quick Stats -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-chart-bar me-2"></i>Quick Stats
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6 mb-3">
+              <h4 class="fw-bold text-primary mb-1"><%= @property.units.count %></h4>
+              <small class="text-muted">Total Units</small>
+            </div>
+            <div class="col-6 mb-3">
+              <h4 class="fw-bold text-success mb-1"><%= @property.units.joins(:tenant).count %></h4>
+              <small class="text-muted">Occupied</small>
+            </div>
+            <div class="col-6 mb-3">
+              <h4 class="fw-bold text-warning mb-1"><%= @property.units.where(tenant: nil).count %></h4>
+              <small class="text-muted">Vacant</small>
+            </div>
+            <div class="col-6 mb-3">
+              <h4 class="fw-bold text-info mb-1">$<%= @property.units.sum(:monthly_rent) || 0 %></h4>
+              <small class="text-muted">Total Rent</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-clock me-2"></i>Recent Activity
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="fas fa-plus text-white"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h6 class="mb-0">Property Created</h6>
+              <small class="text-muted"><%= @property.created_at.strftime("%B %d, %Y") %></small>
+            </div>
+          </div>
+          
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <div class="bg-success rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="fas fa-edit text-white"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h6 class="mb-0">Last Updated</h6>
+              <small class="text-muted"><%= @property.updated_at.strftime("%B %d, %Y") %></small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

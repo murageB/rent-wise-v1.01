@@ -1,0 +1,119 @@
+<div style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+  <h1 style="color: #1d3557; margin-bottom: 30px;">Tenant Dashboard</h1>
+  
+  <!-- Quick Stats -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #457b9d;">
+      <h3 style="margin: 0 0 10px 0; color: #457b9d;">My Unit</h3>
+      <p style="font-size: 1.5rem; margin: 0; font-weight: bold;">
+        <% if current_user.tenant&.unit %>
+          <%= current_user.tenant.unit.unit_number %>
+        <% else %>
+          Not Assigned
+        <% end %>
+      </p>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #e63946;">
+      <h3 style="margin: 0 0 10px 0; color: #e63946;">Monthly Rent</h3>
+      <p style="font-size: 1.5rem; margin: 0; font-weight: bold;">
+        <% if current_user.tenant&.rent_amount %>
+          $<%= current_user.tenant.rent_amount %>
+        <% else %>
+          Not Set
+        <% end %>
+      </p>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #2a9d8f;">
+      <h3 style="margin: 0 0 10px 0; color: #2a9d8f;">My Requests</h3>
+      <p style="font-size: 1.5rem; margin: 0; font-weight: bold;">
+        <%= @maintenance_requests.where(tenant: current_user.tenant).count %>
+      </p>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #1d3557;">
+      <h3 style="margin: 0 0 10px 0; color: #1d3557;">Lease End</h3>
+      <p style="font-size: 1.5rem; margin: 0; font-weight: bold;">
+        <% if current_user.tenant&.lease_end_date %>
+          <%= current_user.tenant.lease_end_date.strftime("%b %Y") %>
+        <% else %>
+          Not Set
+        <% end %>
+      </p>
+    </div>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+    <h2 style="color: #1d3557; margin-bottom: 20px;">Quick Actions</h2>
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+      <a href="/maintenance_requests/new" style="padding: 10px 20px; background: #2a9d8f; color: white; text-decoration: none; border-radius: 5px;">Submit Maintenance Request</a>
+      <a href="/rent_payments/new" style="padding: 10px 20px; background: #457b9d; color: white; text-decoration: none; border-radius: 5px;">Make Rent Payment</a>
+      <a href="/maintenance_requests" style="padding: 10px 20px; background: #e63946; color: white; text-decoration: none; border-radius: 5px;">View My Requests</a>
+      <a href="/rent_payments" style="padding: 10px 20px; background: #1d3557; color: white; text-decoration: none; border-radius: 5px;">Payment History</a>
+    </div>
+  </div>
+  
+  <!-- My Information -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <h3 style="color: #1d3557; margin-bottom: 15px;">My Information</h3>
+      <% if current_user.tenant %>
+        <p><strong>Name:</strong> <%= current_user.email %></p>
+        <p><strong>Unit:</strong> <%= current_user.tenant.unit&.unit_number || 'Not Assigned' %></p>
+        <p><strong>Property:</strong> <%= current_user.tenant.unit&.property&.name || 'Not Assigned' %></p>
+        <p><strong>Lease Start:</strong> <%= current_user.tenant.lease_start_date&.strftime("%B %d, %Y") || 'Not Set' %></p>
+        <p><strong>Lease End:</strong> <%= current_user.tenant.lease_end_date&.strftime("%B %d, %Y") || 'Not Set' %></p>
+        <p><strong>Status:</strong> <span style="padding: 3px 8px; background: #2a9d8f; color: white; border-radius: 3px; font-size: 0.8rem;"><%= current_user.tenant.status %></span></p>
+      <% else %>
+        <p>No tenant information available.</p>
+      <% end %>
+    </div>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+      <h3 style="color: #1d3557; margin-bottom: 15px;">Recent Rent Payments</h3>
+      <% if current_user.tenant %>
+        <% @rent_payments.where(tenant: current_user.tenant).order(payment_date: :desc).limit(5).each do |payment| %>
+          <div style="padding: 10px; border-bottom: 1px solid #eee;">
+            <strong>$<%= payment.amount %></strong>
+            <span style="float: right; padding: 3px 8px; background: <%= payment.status == 'paid' ? '#2a9d8f' : '#e63946' %>; color: white; border-radius: 3px; font-size: 0.8rem;">
+              <%= payment.status %>
+            </span><br>
+            <small style="color: #666;"><%= payment.payment_date.strftime("%b %d, %Y") %></small>
+          </div>
+        <% end %>
+      <% else %>
+        <p>No payment history available.</p>
+      <% end %>
+    </div>
+  </div>
+  
+  <!-- My Maintenance Requests -->
+  <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h3 style="color: #1d3557; margin-bottom: 15px;">My Maintenance Requests</h3>
+    <% if current_user.tenant %>
+      <% @maintenance_requests.where(tenant: current_user.tenant).order(created_at: :desc).limit(10).each do |request| %>
+        <div style="padding: 15px; border: 1px solid #eee; border-radius: 5px; margin-bottom: 10px;">
+          <div style="display: flex; justify-content: between; align-items: center;">
+            <div>
+              <strong><%= request.title %></strong><br>
+              <small style="color: #666;"><%= request.description %></small><br>
+              <small style="color: #666;">Submitted: <%= request.created_at.strftime("%b %d, %Y") %></small>
+            </div>
+            <div style="text-align: right;">
+              <span style="padding: 5px 10px; background: <%= request.priority == 'high' ? '#e63946' : '#457b9d' %>; color: white; border-radius: 3px; font-size: 0.8rem; margin-bottom: 5px; display: block;">
+                <%= request.priority %>
+              </span>
+              <span style="padding: 5px 10px; background: <%= request.status == 'completed' ? '#2a9d8f' : '#e63946' %>; color: white; border-radius: 3px; font-size: 0.8rem;">
+                <%= request.status %>
+              </span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <p>No maintenance requests found.</p>
+    <% end %>
+  </div>
+</div> 

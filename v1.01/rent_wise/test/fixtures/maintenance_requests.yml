@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  property: one
+  unit: one
+  tenant: one
+  title: MyString
+  description: MyText
+  priority: MyString
+  status: MyString
+  requested_date: 2025-06-28 19:35:35
+  completed_date: 2025-06-28 19:35:35
+
+two:
+  property: two
+  unit: two
+  tenant: two
+  title: MyString
+  description: MyText
+  priority: MyString
+  status: MyString
+  requested_date: 2025-06-28 19:35:35
+  completed_date: 2025-06-28 19:35:35

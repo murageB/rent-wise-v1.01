@@ -1,7 +1,6 @@
 class AddFieldsToUsers < ActiveRecord::Migration[7.1]
   def change
     add_column :users, :phone, :string
-    add_column :users, :password_digest, :string
     add_column :users, :active, :boolean, default: true, null: false
     add_column :users, :last_login_at, :datetime
     

@@ -1,0 +1,70 @@
+<div style="padding: 20px; max-width: 1200px; margin: 0 auto;">
+  <h1 style="color: #1d3557; margin-bottom: 30px;">Caretaker Dashboard</h1>
+  
+  <!-- Quick Stats -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #2a9d8f;">
+      <h3 style="margin: 0 0 10px 0; color: #2a9d8f;">Pending Maintenance</h3>
+      <p style="font-size: 2rem; margin: 0; font-weight: bold;"><%= @maintenance_requests.where(status: 'pending').count %></p>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #e63946;">
+      <h3 style="margin: 0 0 10px 0; color: #e63946;">High Priority</h3>
+      <p style="font-size: 2rem; margin: 0; font-weight: bold;"><%= @maintenance_requests.where(priority: 'high').count %></p>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #457b9d;">
+      <h3 style="margin: 0 0 10px 0; color: #457b9d;">Properties Managed</h3>
+      <p style="font-size: 2rem; margin: 0; font-weight: bold;"><%= @properties.count %></p>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #1d3557;">
+      <h3 style="margin: 0 0 10px 0; color: #1d3557;">Completed Today</h3>
+      <p style="font-size: 2rem; margin: 0; font-weight: bold;"><%= @maintenance_requests.where(completed_date: Date.today).count %></p>
+    </div>
+  </div>
+  
+  <!-- Quick Actions -->
+  <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+    <h2 style="color: #1d3557; margin-bottom: 20px;">Quick Actions</h2>
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+      <a href="/maintenance_requests/new" style="padding: 10px 20px; background: #2a9d8f; color: white; text-decoration: none; border-radius: 5px;">Create Maintenance Request</a>
+      <a href="/maintenance_requests" style="padding: 10px 20px; background: #e63946; color: white; text-decoration: none; border-radius: 5px;">View All Requests</a>
+      <a href="/properties" style="padding: 10px 20px; background: #457b9d; color: white; text-decoration: none; border-radius: 5px;">View Properties</a>
+      <a href="/units" style="padding: 10px 20px; background: #1d3557; color: white; text-decoration: none; border-radius: 5px;">View Units</a>
+    </div>
+  </div>
+  
+  <!-- Maintenance Overview -->
+  <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+    <h3 style="color: #1d3557; margin-bottom: 15px;">High Priority Maintenance Requests</h3>
+    <% @maintenance_requests.where(priority: 'high').order(created_at: :desc).limit(10).each do |request| %>
+      <div style="padding: 15px; border: 1px solid #eee; border-radius: 5px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: between; align-items: center;">
+          <div>
+            <strong><%= request.title %></strong><br>
+            <small style="color: #666;"><%= request.description %></small><br>
+            <small style="color: #666;">Property: <%= request.property.name if request.property %></small>
+          </div>
+          <span style="padding: 5px 10px; background: #e63946; color: white; border-radius: 3px; font-size: 0.8rem;">
+            <%= request.status %>
+          </span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <!-- Recent Activity -->
+  <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h3 style="color: #1d3557; margin-bottom: 15px;">Recent Maintenance Activity</h3>
+    <% @maintenance_requests.order(updated_at: :desc).limit(8).each do |request| %>
+      <div style="padding: 10px; border-bottom: 1px solid #eee;">
+        <strong><%= request.title %></strong>
+        <span style="float: right; padding: 3px 8px; background: <%= request.status == 'completed' ? '#2a9d8f' : '#e63946' %>; color: white; border-radius: 3px; font-size: 0.8rem;">
+          <%= request.status %>
+        </span><br>
+        <small style="color: #666;"><%= request.updated_at.strftime("%b %d, %Y at %I:%M %p") %></small>
+      </div>
+    <% end %>
+  </div>
+</div> 

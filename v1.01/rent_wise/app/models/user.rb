@@ -3,7 +3,6 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-  has_secure_password
 
   # Enums
   enum role: { tenant: 'tenant', caretaker: 'caretaker', landlord: 'landlord' }
