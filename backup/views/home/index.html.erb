@@ -1,0 +1,37 @@
+<div style="text-align:center; margin-top: 60px;">
+  <h1 style="font-size: 2.5rem; color: #2563eb;">Welcome to RentWise</h1>
+  <p style="font-size: 1.2rem; color: #555; margin-top: 1rem;">Your all-in-one property management platform, now powered by Ruby on Rails.</p>
+  <hr style="margin: 2rem auto; width: 60%;">
+  <h2 style="font-size: 1.5rem; color: #333; margin-top: 2rem;">Properties</h2>
+  <div style="margin-bottom: 1.5rem;">
+    <a href="/properties/new" style="background: #2563eb; color: #fff; padding: 0.5rem 1.2rem; border-radius: 5px; text-decoration: none;">Add New Property</a>
+  </div>
+  <% if @properties.any? %>
+    <table style="margin: 0 auto; border-collapse: collapse; min-width: 60%;">
+      <thead>
+        <tr style="background: #f3f4f6;">
+          <th style="padding: 8px 16px; border: 1px solid #e5e7eb;">Name</th>
+          <th style="padding: 8px 16px; border: 1px solid #e5e7eb;">Address</th>
+          <th style="padding: 8px 16px; border: 1px solid #e5e7eb;">Type</th>
+          <th style="padding: 8px 16px; border: 1px solid #e5e7eb;">Status</th>
+          <th style="padding: 8px 16px; border: 1px solid #e5e7eb;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @properties.each do |property| %>
+          <tr>
+            <td style="padding: 8px 16px; border: 1px solid #e5e7eb;"><%= property.name %></td>
+            <td style="padding: 8px 16px; border: 1px solid #e5e7eb;"><%= property.address %></td>
+            <td style="padding: 8px 16px; border: 1px solid #e5e7eb;"><%= property.property_type %></td>
+            <td style="padding: 8px 16px; border: 1px solid #e5e7eb;"><%= property.status %></td>
+            <td style="padding: 8px 16px; border: 1px solid #e5e7eb;">
+              <a href="/properties/<%= property.id %>" style="color: #2563eb; text-decoration: underline;">View</a>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p style="color: #888;">No properties yet. <a href="/properties/new" style="color: #2563eb; text-decoration: underline;">Add your first property</a>.</p>
+  <% end %>
+</div> 
