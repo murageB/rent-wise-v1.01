@@ -251,6 +251,29 @@
           padding: 0;
         }
       }
+      
+      .dropdown-menu {
+        border: none;
+        border-radius: 0.75rem;
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.10);
+        padding: 0.5rem 0;
+        min-width: 180px;
+      }
+      .dropdown-item, .signout-btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 0.5rem;
+        transition: background 0.2s, color 0.2s;
+        width: 100%;
+        text-align: left;
+      }
+      .dropdown-item:hover, .dropdown-item:focus, .signout-btn:hover, .signout-btn:focus {
+        background: var(--primary-color) !important;
+        color: #fff !important;
+      }
+      .dropdown-divider {
+        margin: 0.25rem 0;
+      }
     </style>
   </head>
 
@@ -304,7 +327,13 @@
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
                   <li><hr class="dropdown-divider"></li>
-                  <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %></li>
+                  <li>
+                    <form action="<%= destroy_user_session_path %>" method="post" style="display:inline;">
+                      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+                      <input type="hidden" name="_method" value="delete" />
+                      <button type="submit" class="dropdown-item signout-btn">Sign Out</button>
+                    </form>
+                  </li>
                 </ul>
               </li>
             <% else %>
