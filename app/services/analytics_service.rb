@@ -143,7 +143,7 @@ class AnalyticsService
       month_end = current_date.end_of_month
       
       total_units = units_in_period(month_start, month_end).count
-      occupied_units = occupied_units_in_period(month_start, month_end).count
+      occupied_units = occupied_units_in_period(month_start, month_end)
       
       monthly_occupancy << {
         month: current_date.strftime("%B %Y"),
@@ -274,8 +274,7 @@ class AnalyticsService
 
   def property_occupancy(property)
     total_units = property.units.count
-    occupied_units = property.units.joins(:tenant).count
-    
+    occupied_units = property.units.joins(:tenants).distinct.count('units.id')
     {
       total_units: total_units,
       occupied_units: occupied_units,
@@ -366,6 +365,15 @@ class AnalyticsService
     Tenant.where(status: 'active').count
   end
 
+  def maintenance_cost_analysis
+    {
+      total_maintenance_cost: maintenance_costs,
+      cost_by_priority: maintenance_cost_by_priority,
+      cost_by_property: maintenance_cost_by_property,
+      average_cost_per_request: average_maintenance_cost_per_request
+    }
+  end
+
   private
 
   def base_scope
@@ -383,7 +391,7 @@ class AnalyticsService
 
   def occupied_units_count
     scope = base_scope
-    scope.joins(units: :tenant).count
+    scope.joins(units: :tenants).distinct.count('units.id')
   end
 
   def maintenance_requests_count
@@ -489,7 +497,7 @@ class AnalyticsService
   end
 
   def occupied_units_in_period(start_date, end_date)
-    Unit.joins(:tenant).where(tenants: { lease_start_date: start_date..end_date })
+    Unit.joins(:tenants).where(tenants: { lease_start_date: start_date..end_date }).distinct.count('units.id')
   end
 
   def maintenance_requests_in_period(start_date, end_date)
@@ -561,7 +569,7 @@ class AnalyticsService
 
   def property_occupancy_rate(property)
     total_units = property.units.count
-    occupied_units = property.units.joins(:tenant).count
+    occupied_units = property.units.joins(:tenants).distinct.count('units.id')
     
     total_units > 0 ? (occupied_units.to_f / total_units * 100).round(2) : 0
   end
@@ -640,16 +648,6 @@ class AnalyticsService
       csv << ['Rent Collection Rate (%)', rent_collection_rate]
       csv << ['Maintenance Completion Rate (%)', maintenance_completion_rate]
     end
-  end
-
-  # Missing methods referenced in controller
-  def maintenance_cost_analysis
-    {
-      total_maintenance_cost: maintenance_costs,
-      cost_by_priority: maintenance_cost_by_priority,
-      cost_by_property: maintenance_cost_by_property,
-      average_cost_per_request: average_maintenance_cost_per_request
-    }
   end
 
   def maintenance_cost_by_priority
