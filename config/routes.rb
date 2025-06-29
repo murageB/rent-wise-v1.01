@@ -8,11 +8,18 @@ Rails.application.routes.draw do
   # Dashboard route
   get 'dashboard', to: 'dashboard#index'
   
-  # Resource routes
-  resources :properties
+  # Resource routes with nested resources
+  resources :properties do
+    resources :units
+    resources :maintenance_requests
+    resources :tenants
+  end
+  
+  # Standalone resource routes (for direct access)
   resources :units
   resources :tenants
   resources :maintenance_requests
+  
   resources :rent_payments
   resources :water_bills do
     member do
