@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_28_192819) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_29_174158) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "articles", force: :cascade do |t|
+    t.string "title"
+    t.text "content"
+    t.string "author"
+    t.datetime "published_at"
+    t.string "medium_url"
+    t.boolean "featured"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "maintenance_requests", force: :cascade do |t|
     t.bigint "property_id", null: false

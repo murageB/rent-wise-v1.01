@@ -149,6 +149,101 @@ end
 
 puts "Rent Payments created: #{RentPayment.count}"
 
+# Create sample blog articles
+puts "Creating blog articles..."
+
+articles_data = [
+  {
+    title: "From React to Rails: The Great Migration",
+    content: "Our journey from a React-based frontend to a full Rails application was both challenging and rewarding. We discovered that Rails' convention-over-configuration approach significantly reduced our development time while maintaining the flexibility we needed for our property management platform.
+
+The migration involved several key phases:
+1. Setting up the Rails environment with proper asset pipeline configuration
+2. Converting React components to Rails views with ERB templates
+3. Implementing Turbo and Stimulus for dynamic interactions
+4. Optimizing database queries and improving performance
+
+The result was a more maintainable codebase with better SEO capabilities and faster page loads. Rails' built-in security features also gave us peace of mind when handling sensitive property and tenant data.",
+    author: "RentWise Team",
+    published_at: 1.week.ago,
+    medium_url: "https://medium.com/@rentwise/from-react-to-rails-the-great-migration",
+    featured: true
+  },
+  {
+    title: "Blockchain Integration: Quorum Revolution",
+    content: "Integrating blockchain technology into our property management platform was a game-changer. We chose Hyperledger Besu (formerly Quorum) for its enterprise-grade features and privacy capabilities.
+
+Key benefits we've achieved:
+- Immutable property records and transaction history
+- Smart contracts for automated rent collection and maintenance requests
+- Enhanced security and transparency for all stakeholders
+- Reduced fraud and improved trust between landlords and tenants
+
+The implementation required careful consideration of:
+- Network architecture and node management
+- Smart contract development and deployment
+- Integration with existing Rails backend
+- User experience design for blockchain interactions
+
+Our blockchain integration has set us apart in the property management industry, providing unprecedented levels of transparency and automation.",
+    author: "RentWise Team",
+    published_at: 3.days.ago,
+    medium_url: "https://medium.com/@rentwise/blockchain-integration-quorum-revolution",
+    featured: true
+  },
+  {
+    title: "Production Deployment: Scaling Success",
+    content: "Taking RentWise from development to production required careful planning and robust infrastructure. We implemented a comprehensive deployment strategy that ensures high availability and scalability.
+
+Our production setup includes:
+- Docker containerization for consistent environments
+- Load balancing and auto-scaling capabilities
+- Database optimization and caching strategies
+- Monitoring and alerting systems
+- Automated backup and disaster recovery
+
+Performance optimizations we implemented:
+- Database query optimization and indexing
+- Asset compression and CDN integration
+- Background job processing for heavy operations
+- Caching strategies for frequently accessed data
+
+The result is a production-ready platform that can handle thousands of properties and users while maintaining excellent performance and reliability.",
+    author: "RentWise Team",
+    published_at: 1.day.ago,
+    medium_url: "https://medium.com/@rentwise/production-deployment-scaling-success",
+    featured: false
+  },
+  {
+    title: "The Future of Property Management Technology",
+    content: "As we look ahead, the property management industry is poised for significant technological transformation. Our vision for RentWise includes:
+
+Emerging Technologies:
+- AI-powered predictive maintenance
+- IoT integration for smart building management
+- Virtual reality property tours
+- Advanced analytics and reporting
+
+Industry Trends:
+- Increased focus on sustainability and energy efficiency
+- Growing demand for contactless property management
+- Integration with smart city initiatives
+- Enhanced tenant experience through technology
+
+We're committed to staying at the forefront of these developments, continuously improving our platform to meet the evolving needs of property managers and tenants alike.",
+    author: "RentWise Team",
+    published_at: 6.hours.ago,
+    medium_url: "https://medium.com/@rentwise/future-of-property-management-technology",
+    featured: false
+  }
+]
+
+articles_data.each do |article_data|
+  Article.create!(article_data)
+end
+
+puts "Created #{Article.count} blog articles"
+
 puts "Sample data created successfully!"
 puts "Properties: #{Property.count}"
 puts "Units: #{Unit.count}"

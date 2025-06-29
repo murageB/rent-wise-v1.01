@@ -1,0 +1,76 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <!-- Back to Blog -->
+    <div class="mb-8">
+      <%= link_to blog_path, class: "text-blue-600 hover:text-blue-800 font-medium flex items-center" do %>
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Blog
+      <% end %>
+    </div>
+
+    <!-- Article Header -->
+    <header class="mb-8">
+      <div class="flex items-center mb-4">
+        <% if @article.featured? %>
+          <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full mr-3">Featured</span>
+        <% end %>
+        <span class="text-gray-500 text-sm"><%= @article.reading_time %></span>
+      </div>
+      
+      <h1 class="text-4xl font-bold text-gray-900 mb-4"><%= @article.title %></h1>
+      
+      <div class="flex items-center justify-between text-gray-600">
+        <div class="flex items-center">
+          <span class="font-medium">By <%= @article.author %></span>
+        </div>
+        <time datetime="<%= @article.published_at.iso8601 %>">
+          <%= @article.published_at.strftime("%B %d, %Y") %>
+        </time>
+      </div>
+    </header>
+
+    <!-- Article Content -->
+    <article class="prose prose-lg max-w-none mb-8">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <%= simple_format(@article.content, class: "text-gray-800 leading-relaxed") %>
+      </div>
+    </article>
+
+    <!-- Medium Link -->
+    <% if @article.medium_url.present? %>
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold text-blue-900 mb-2">Read the full article on Medium</h3>
+            <p class="text-blue-700">Get the complete version with enhanced formatting and community features.</p>
+          </div>
+          <%= link_to @article.medium_url, target: "_blank", class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors" do %>
+            Read on Medium
+            <svg class="w-4 h-4 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Share Section -->
+    <div class="border-t border-gray-200 pt-8">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Share this article</h3>
+      <div class="flex space-x-4">
+        <a href="https://twitter.com/intent/tweet?text=<%= URI.encode_www_form_component(@article.title) %>&url=<%= URI.encode_www_form_component(request.original_url) %>" 
+           target="_blank" 
+           class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          Share on Twitter
+        </a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=<%= URI.encode_www_form_component(request.original_url) %>" 
+           target="_blank" 
+           class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          Share on LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

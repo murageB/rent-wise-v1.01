@@ -1,4 +1,15 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    get 'articles/index'
+    get 'articles/new'
+    get 'articles/create'
+    get 'articles/edit'
+    get 'articles/update'
+    get 'articles/destroy'
+    resources :articles
+  end
+  get 'blog/index'
+  get 'blog/show'
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -49,4 +60,8 @@ Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
+  
+  # Blog routes
+  get 'blog', to: 'blog#index'
+  get 'blog/:id', to: 'blog#show', as: :blog_article
 end 
