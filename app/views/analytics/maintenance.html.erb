@@ -1,0 +1,235 @@
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <div>
+        <h1 class="h3 mb-0 text-warning">
+          <i class="fas fa-tools me-2"></i>Maintenance Analytics
+        </h1>
+        <p class="text-muted mb-0">Analyze maintenance requests, completion rates, and costs</p>
+      </div>
+      <div>
+        <a href="<%= export_analytics_path('maintenance', format: :csv) %>" class="btn btn-outline-primary me-2">
+          <i class="fas fa-download"></i> Export CSV
+        </a>
+        <a href="<%= export_analytics_path('maintenance', format: :pdf) %>" class="btn btn-outline-danger">
+          <i class="fas fa-file-pdf"></i> Export PDF
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Maintenance Summary Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Total Requests</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= @maintenance_summary[:total_requests] %></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Completed</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= @maintenance_summary[:completed_requests] %></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card border-left-danger shadow h-100 py-2">
+        <div class="card-body">
+          <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Pending</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= @maintenance_summary[:pending_requests] %></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Completion Rate</div>
+          <div class="h5 mb-0 font-weight-bold text-gray-800"><%= @maintenance_summary[:completion_rate] %>%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Maintenance Trend Chart -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-warning">Monthly Maintenance Trend</h6>
+        </div>
+        <div class="card-body">
+          <canvas id="maintenanceTrendChart" width="100%" height="40"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Breakdown by Priority & Property -->
+  <div class="row mb-4">
+    <div class="col-md-6 mb-4">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-danger">Requests by Priority</h6>
+        </div>
+        <div class="card-body">
+          <% if @maintenance_by_priority.any? %>
+            <ul class="list-group list-group-flush">
+              <% @maintenance_by_priority.each do |priority, count| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <%= priority.titleize %>
+                  <span class="fw-bold"><%= count %></span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-muted">No data</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Requests by Property</h6>
+        </div>
+        <div class="card-body">
+          <% if @maintenance_by_property.any? %>
+            <ul class="list-group list-group-flush">
+              <% @maintenance_by_property.each do |property, count| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <%= property %>
+                  <span class="fw-bold"><%= count %></span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-muted">No data</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cost Analysis -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-info">Maintenance Cost Analysis</h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Cost</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">$<%= number_with_delimiter(@cost_analysis[:total_maintenance_cost].to_i) %></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Avg. Cost/Request</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">$<%= number_with_delimiter(@cost_analysis[:average_cost_per_request].to_i) %></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">High Priority</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">$<%= number_with_delimiter(@cost_analysis[:cost_by_priority]['high'].to_i) %></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <div class="card border-left-secondary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">By Property</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#costByPropertyModal">View</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Cost by Property -->
+  <div class="modal fade" id="costByPropertyModal" tabindex="-1" aria-labelledby="costByPropertyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="costByPropertyModalLabel">Maintenance Cost by Property</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <% if @cost_analysis[:cost_by_property].any? %>
+            <ul class="list-group list-group-flush">
+              <% @cost_analysis[:cost_by_property].each do |property, cost| %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <%= property %>
+                  <span class="fw-bold">$<%= number_with_delimiter(cost.to_i) %></span>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-muted">No data</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const maintData = <%= raw @maintenance_trend.to_json %>;
+const maintMonths = maintData.map(row => row.month);
+const totalRequests = maintData.map(row => row.total_requests);
+const completedRequests = maintData.map(row => row.completed_requests);
+const highPriority = maintData.map(row => row.high_priority_requests);
+
+new Chart(document.getElementById('maintenanceTrendChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: maintMonths,
+    datasets: [
+      {
+        label: 'Total Requests',
+        data: totalRequests,
+        borderColor: 'rgba(255, 193, 7, 1)',
+        backgroundColor: 'rgba(255, 193, 7, 0.2)',
+        tension: 0.1
+      },
+      {
+        label: 'Completed',
+        data: completedRequests,
+        borderColor: 'rgba(40, 167, 69, 1)',
+        backgroundColor: 'rgba(40, 167, 69, 0.2)',
+        tension: 0.1
+      },
+      {
+        label: 'High Priority',
+        data: highPriority,
+        borderColor: 'rgba(220, 53, 69, 1)',
+        backgroundColor: 'rgba(220, 53, 69, 0.2)',
+        tension: 0.1
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: { y: { beginAtZero: true } }
+  }
+});
+</script> 

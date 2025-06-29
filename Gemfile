@@ -71,5 +71,9 @@ gem "money-rails", "~> 1.15"  # Money handling
 # Authentication
 gem 'devise'
 
+# Analytics and reporting
+gem 'groupdate'  # Time-based grouping for analytics
+gem 'wicked_pdf'  # PDF generation for reports
+
 # Blockchain integration - temporarily commented out due to system dependency issues
 # gem 'eth'

@@ -8,6 +8,15 @@ Rails.application.routes.draw do
   # Dashboard route
   get 'dashboard', to: 'dashboard#index'
   
+  # Analytics routes
+  get 'analytics', to: 'analytics#dashboard'
+  get 'analytics/financial', to: 'analytics#financial'
+  get 'analytics/occupancy', to: 'analytics#occupancy'
+  get 'analytics/maintenance', to: 'analytics#maintenance'
+  get 'analytics/property/:id', to: 'analytics#property_analytics', as: :property_analytics
+  get 'analytics/export/:report_type', to: 'analytics#export', as: :export_analytics
+  get 'analytics/real-time', to: 'analytics#real_time'
+  
   # Resource routes with nested resources
   resources :properties do
     resources :units

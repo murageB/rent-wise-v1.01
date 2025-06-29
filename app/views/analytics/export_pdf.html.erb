@@ -1,0 +1,7 @@
+<div style="font-family: Arial, sans-serif;">
+  <h1 style="color: #1d3557;">Analytics Report</h1>
+  <p>Report Type: <%= params[:report_type].to_s.titleize %></p>
+  <p>Date: <%= Date.today.strftime('%B %d, %Y') %></p>
+  <hr>
+  <%= yield %>
+</div> 
