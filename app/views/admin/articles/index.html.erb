@@ -6,6 +6,34 @@
     <% end %>
   </div>
 
+  <!-- Analytics Summary -->
+  <div class="row mb-4">
+    <div class="col-md-3 col-6 mb-2">
+      <div class="card text-center p-3">
+        <div class="fw-bold" style="font-size: 1.5rem;"><%= @total_articles %></div>
+        <div class="text-muted">Total Articles</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6 mb-2">
+      <div class="card text-center p-3">
+        <div class="fw-bold" style="font-size: 1.5rem;"><%= @published_articles %></div>
+        <div class="text-muted">Published</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6 mb-2">
+      <div class="card text-center p-3">
+        <div class="fw-bold" style="font-size: 1.5rem;"><%= @draft_articles %></div>
+        <div class="text-muted">Drafts</div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6 mb-2">
+      <div class="card text-center p-3">
+        <div class="fw-bold" style="font-size: 1.5rem;"><%= @featured_articles %></div>
+        <div class="text-muted">Featured</div>
+      </div>
+    </div>
+  </div>
+
   <% if @articles.any? %>
     <div class="bg-white rounded-lg shadow overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200">
@@ -14,6 +42,8 @@
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Published</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Featured</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
@@ -27,7 +57,13 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= article.author %></td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <%= article.published_at.strftime("%B %d, %Y") %>
+                <%= article.published_at.strftime("%B %d, %Y") if article.published_at %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <%= article.status.presence || (article.published_at && article.published_at <= Time.current ? 'Published' : 'Draft') %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <%= article.category.presence || '-' %>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <% if article.featured? %>

@@ -77,3 +77,9 @@ gem 'wicked_pdf'  # PDF generation for reports
 
 # Blockchain integration - temporarily commented out due to system dependency issues
 # gem 'eth'
+
+gem "redcarpet", "~> 3.6"
+
+gem "ruby-openai", "~> 8.1"
+
+# gem "image_processing", "~> 1.14"  # Temporarily disabled due to system dependencies

@@ -6,7 +6,19 @@ Rails.application.routes.draw do
     get 'articles/edit'
     get 'articles/update'
     get 'articles/destroy'
-    resources :articles
+    resources :articles do
+      member do
+        get :preview
+        patch :publish
+        patch :unpublish
+      end
+      collection do
+        post :ai_generate
+        post :ai_optimize
+        post :ai_suggest_keywords
+        post :ai_generate_meta_description
+      end
+    end
   end
   get 'blog/index'
   get 'blog/show'
@@ -68,4 +80,7 @@ Rails.application.routes.draw do
   # Blog routes
   get 'blog', to: 'blog#index'
   get 'blog/:id', to: 'blog#show', as: :blog_article
+
+  # Admin login route
+  post 'admin_login', to: 'admin/sessions#create', as: :admin_login
 end 

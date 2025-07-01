@@ -26,24 +26,24 @@
       <div class="mb-3">
         <%= f.label :role, class: "form-label fw-semibold" %>
         <%= f.select :role, options_for_select([["Landlord", "landlord"], ["Caretaker", "caretaker"], ["Tenant", "tenant"]], f.object.role), {}, class: "form-select form-select-lg rounded-pill" %>
-      </div>
+  </div>
       <div class="mb-3">
         <%= f.label :password, class: "form-label fw-semibold" %>
         <%= f.password_field :password, autocomplete: "new-password", class: "form-control form-control-lg rounded-pill" %>
-      </div>
+  </div>
       <div class="mb-3">
         <%= f.label :password_confirmation, class: "form-label fw-semibold" %>
         <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control form-control-lg rounded-pill" %>
-      </div>
+  </div>
       <div class="d-grid mb-3">
         <%= f.submit "Sign up", class: "btn btn-primary btn-lg rounded-pill fw-bold" %>
-      </div>
+  </div>
       <div class="text-center">
         <%= link_to "Log in", new_session_path(resource_name), class: "text-decoration-none" %>
-      </div>
+  </div>
     <% end %>
   </div>
-</div>
+  </div>
 <style>
   body { background: #f8fafc !important; }
 </style>

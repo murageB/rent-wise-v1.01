@@ -145,3 +145,17 @@ In the next article, I'll dive deep into the blockchain integration and show you
 ---
 
 **About the Author**: A developer who learned the hard way that sometimes the best solution is the one that's been working for 18 years. Currently building the future of property management with blockchain technology.
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    setTimeout(function() {
+      var alerts = document.querySelectorAll('.alert');
+      alerts.forEach(function(alert) {
+        alert.classList.add('fade');
+        setTimeout(function() {
+          alert.style.display = 'none';
+        }, 500); // matches Bootstrap fade transition
+      });
+    }, 4000); // 4 seconds
+  });
+</script>

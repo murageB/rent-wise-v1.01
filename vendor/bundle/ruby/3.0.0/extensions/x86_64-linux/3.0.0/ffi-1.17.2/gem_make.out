@@ -1,0 +1,19 @@
+current directory: /home/murage/RentWise v1.01/rent-wise-app/vendor/bundle/ruby/3.0.0/gems/ffi-1.17.2/ext/ffi_c
+/usr/bin/ruby3.0 -I /usr/lib/ruby/vendor_ruby -r ./siteconf20250701-23704-w07e0z.rb extconf.rb
+checking for ffi.h... no
+checking for ffi.h in /usr/local/include,/usr/include/ffi,/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/ffi,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/ffi... no
+checking for whether -Wl,--exclude-libs,ALL is accepted as LDFLAGS... yes
+checking for rb_gc_mark_movable()... yes
+checking for whether -pthread is accepted as LDFLAGS... yes
+creating extconf.h
+creating Makefile
+
+current directory: /home/murage/RentWise v1.01/rent-wise-app/vendor/bundle/ruby/3.0.0/gems/ffi-1.17.2/ext/ffi_c
+make DESTDIR\= clean
+
+current directory: /home/murage/RentWise v1.01/rent-wise-app/vendor/bundle/ruby/3.0.0/gems/ffi-1.17.2/ext/ffi_c
+make DESTDIR\=
+/bin/sh: 1: Syntax error: "(" unexpected
+make: *** [libffi.mk:6: "/home/murage/RentWise] Error 2
+
+make failed, exit code 2

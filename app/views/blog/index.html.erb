@@ -1,81 +1,81 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="text-center mb-12">
-    <h1 class="text-4xl font-bold text-gray-900 mb-4">RentWise Blog</h1>
-    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-      Insights, updates, and stories from our journey in property management technology
-    </p>
-  </div>
+<div class="blog-index-bg py-5" style="background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%); min-height: 100vh;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h1 class="display-4 fw-bold mb-2" style="color: #2563eb;">RentWise Blog</h1>
+      <p class="lead text-muted mb-0">Insights, updates, and stories from our journey in property management technology</p>
+    </div>
 
-  <% if @articles.any? %>
-    <!-- Featured Articles -->
-    <% featured_articles = @articles.featured.limit(2) %>
-    <% if featured_articles.any? %>
-      <div class="mb-12">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Featured Articles</h2>
-        <div class="grid md:grid-cols-2 gap-8">
-          <% featured_articles.each do |article| %>
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300">
-              <div class="p-6">
-                <div class="flex items-center mb-3">
-                  <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Featured</span>
-                  <span class="text-gray-500 text-sm ml-3"><%= article.reading_time %></span>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-3">
-                  <%= link_to article.title, blog_article_path(article), class: "hover:text-blue-600 transition-colors" %>
-                </h3>
-                <p class="text-gray-600 mb-4"><%= article.excerpt %></p>
-                <div class="flex items-center justify-between">
-                  <span class="text-sm text-gray-500">By <%= article.author %></span>
-                  <span class="text-sm text-gray-500"><%= article.published_at.strftime("%B %d, %Y") %></span>
-                </div>
-                <% if article.medium_url.present? %>
-                  <div class="mt-4">
-                    <%= link_to "Read on Medium", article.medium_url, target: "_blank", class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
+    <% if @articles.any? %>
+      <!-- Featured Articles -->
+      <% featured_articles = @articles.featured.limit(2) %>
+      <% if featured_articles.any? %>
+        <div class="mb-5">
+          <h2 class="fw-bold mb-4" style="color: #1d3557;">Featured Articles</h2>
+          <div class="row g-4">
+            <% featured_articles.each do |article| %>
+              <div class="col-md-6">
+                <div class="card shadow-sm h-100 border-0 featured-article" style="border-radius: 1.25rem;">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                      <span class="badge bg-primary me-2">Featured</span>
+                      <span class="text-muted small"><i class="far fa-clock me-1"></i><%= article.reading_time %></span>
+                    </div>
+                    <h3 class="card-title fw-bold mb-2" style="color: #1d3557;">
+                      <%= link_to article.title, blog_article_path(article), class: "text-decoration-none text-dark" %>
+                    </h3>
+                    <p class="card-text text-muted mb-3"><%= article.excerpt %></p>
+                    <div class="d-flex justify-content-between align-items-center mb-2" style="font-size: 0.95rem;">
+                      <span>By <strong><%= article.author %></strong></span>
+                      <span><%= article.published_at.strftime('%B %d, %Y') %></span>
+                    </div>
+                    <% if article.medium_url.present? %>
+                      <%= link_to "Read on Medium", article.medium_url, target: "_blank", class: "btn btn-outline-primary btn-sm" %>
+                    <% end %>
                   </div>
-                <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- All Articles -->
+      <div>
+        <h2 class="fw-bold mb-4" style="color: #1d3557;">All Articles</h2>
+        <div class="row g-4">
+          <% @articles.each do |article| %>
+            <div class="col-md-6 col-lg-4">
+              <div class="card shadow-sm h-100 border-0 blog-card" style="border-radius: 1.25rem;">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-2">
+                    <% if article.featured? %>
+                      <span class="badge bg-primary me-2">Featured</span>
+                    <% end %>
+                    <span class="text-muted small"><i class="far fa-clock me-1"></i><%= article.reading_time %></span>
+                  </div>
+                  <h4 class="card-title fw-bold mb-2" style="color: #1d3557;">
+                    <%= link_to article.title, blog_article_path(article), class: "text-decoration-none text-dark" %>
+                  </h4>
+                  <p class="card-text text-muted mb-3"><%= article.excerpt %></p>
+                  <div class="d-flex justify-content-between align-items-center mb-2" style="font-size: 0.95rem;">
+                    <span>By <strong><%= article.author %></strong></span>
+                    <span><%= article.published_at.strftime('%B %d, %Y') %></span>
+                  </div>
+                  <% if article.medium_url.present? %>
+                    <%= link_to "Read on Medium", article.medium_url, target: "_blank", class: "btn btn-outline-primary btn-sm" %>
+                  <% end %>
+                </div>
               </div>
             </div>
           <% end %>
         </div>
       </div>
-    <% end %>
-
-    <!-- All Articles -->
-    <div>
-      <h2 class="text-2xl font-semibold text-gray-800 mb-6">All Articles</h2>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <% @articles.each do |article| %>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow duration-300">
-            <div class="p-6">
-              <div class="flex items-center mb-3">
-                <% if article.featured? %>
-                  <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded mr-2">Featured</span>
-                <% end %>
-                <span class="text-gray-500 text-sm"><%= article.reading_time %></span>
-              </div>
-              <h3 class="text-lg font-bold text-gray-900 mb-3">
-                <%= link_to article.title, blog_article_path(article), class: "hover:text-blue-600 transition-colors" %>
-              </h3>
-              <p class="text-gray-600 mb-4 text-sm"><%= article.excerpt %></p>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-500">By <%= article.author %></span>
-                <span class="text-sm text-gray-500"><%= article.published_at.strftime("%B %d, %Y") %></span>
-              </div>
-              <% if article.medium_url.present? %>
-                <div class="mt-4">
-                  <%= link_to "Read on Medium", article.medium_url, target: "_blank", class: "text-blue-600 hover:text-blue-800 text-sm font-medium" %>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
+    <% else %>
+      <div class="text-center py-12">
+        <div class="text-gray-400 text-6xl mb-4">📝</div>
+        <h3 class="text-xl fw-bold text-gray-700 mb-2">No articles yet</h3>
+        <p class="text-muted">Check back soon for our latest insights and updates!</p>
       </div>
-    </div>
-  <% else %>
-    <div class="text-center py-12">
-      <div class="text-gray-400 text-6xl mb-4">📝</div>
-      <h3 class="text-xl font-semibold text-gray-700 mb-2">No articles yet</h3>
-      <p class="text-gray-500">Check back soon for our latest insights and updates!</p>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>

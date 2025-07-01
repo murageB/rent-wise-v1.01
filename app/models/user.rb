@@ -5,7 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   # Enums
-  enum role: { tenant: 'tenant', caretaker: 'caretaker', landlord: 'landlord' }
+  enum role: { tenant: 'tenant', caretaker: 'caretaker', landlord: 'landlord', admin: 'admin' }
 
   # Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }

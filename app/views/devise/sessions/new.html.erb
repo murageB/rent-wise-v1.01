@@ -12,11 +12,11 @@
       <div class="mb-3">
         <%= f.label :email, class: "form-label fw-semibold" %>
         <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control form-control-lg rounded-pill" %>
-      </div>
+  </div>
       <div class="mb-3">
         <%= f.label :password, class: "form-label fw-semibold" %>
         <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-lg rounded-pill" %>
-      </div>
+  </div>
       <div class="mb-3">
         <%= label_tag :role, "Sign in as", class: "form-label fw-semibold" %>
         <%= select_tag :role, options_for_select([["Landlord", "landlord"], ["Caretaker", "caretaker"], ["Tenant", "tenant"]]), class: "form-select form-select-lg rounded-pill" %>
@@ -31,10 +31,11 @@
       <div class="d-flex justify-content-between">
         <%= link_to "Sign up", new_user_registration_path, class: "text-decoration-none" %>
         <%= link_to "Forgot your password?", new_user_password_path, class: "text-decoration-none" %>
-      </div>
-    <% end %>
+    </div>
+  <% end %>
   </div>
 </div>
+
 <style>
   body { background: #f8fafc !important; }
 </style>

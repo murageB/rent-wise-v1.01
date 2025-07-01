@@ -296,12 +296,11 @@
             <li class="nav-item">
               <a class="nav-link" href="/properties">Properties</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/blog">Blog</a>
-            </li>
+            <% if user_signed_in? && (current_user.role == 'admin' || current_user.role == 'landlord') %>
             <li class="nav-item">
               <a class="nav-link" href="/admin/articles">Admin</a>
             </li>
+            <% end %>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="analyticsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-chart-bar me-1"></i>Analytics
@@ -316,6 +315,11 @@
             <li class="nav-item">
               <a class="nav-link" href="/blockchain/status">Blockchain</a>
             </li>
+            <% unless user_signed_in? %>
+            <li class="nav-item">
+              <a class="nav-link" href="/blog">Blog</a>
+            </li>
+            <% end %>
           </ul>
           
           <ul class="navbar-nav">
@@ -382,10 +386,57 @@
             <p class="mb-0">&copy; 2025 RentWise. All rights reserved.</p>
           </div>
         </div>
+        <div class="row mt-3">
+          <div class="col-12 text-center">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#adminModal" class="text-white text-decoration-underline" style="font-size: 0.9rem;">Admin</a>
+          </div>
+        </div>
       </div>
     </footer>
 
+    <!-- Admin Modal -->
+    <div class="modal fade" id="adminModal" tabindex="-1" aria-labelledby="adminModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="adminModalLabel">
+              <i class="fas fa-user-shield text-danger me-2"></i>Admin Authentication
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <%= form_with url: admin_login_path, method: :post, local: true do |f| %>
+            <div class="modal-body">
+              <% if flash[:admin_alert] %>
+                <div class="alert alert-danger text-center py-2"><%= flash[:admin_alert] %></div>
+              <% end %>
+              <div class="mb-3">
+                <%= f.label :password, "Admin Password", class: "form-label fw-semibold" %>
+                <%= f.password_field :password, class: "form-control form-control-lg rounded-pill", required: true %>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <%= f.submit "Admin Login", class: "btn btn-danger btn-lg rounded-pill fw-bold" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
+          var alerts = document.querySelectorAll('.alert');
+          alerts.forEach(function(alert) {
+            alert.classList.add('fade');
+            setTimeout(function() {
+              alert.style.display = 'none';
+            }, 500); // matches Bootstrap fade transition
+          });
+        }, 4000); // 4 seconds
+      });
+    </script>
   </body>
 </html>
